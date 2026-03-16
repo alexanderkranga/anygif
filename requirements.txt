@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+redis[hiredis]
+httpx
+pydantic
+boto3
+python-dotenv

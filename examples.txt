@@ -1,0 +1,1 @@
+docker run --rm -v "$(pwd)/output:/output" anygif --fps 25 "" 07:50 07:55 2>&1
