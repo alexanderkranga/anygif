@@ -1,0 +1,329 @@
+/* ===== AnyGif Neon Theme ===== */
+
+:root {
+  --bg: #000000;
+  --surface: #0a0a0a;
+  --surface-alt: #111111;
+  --neon: #ff1a1a;
+  --neon-glow: #ff0000;
+  --text: #ffffff;
+  --text-muted: #999999;
+  --font: 'Inter', sans-serif;
+}
+
+/* ===== Base ===== */
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--neon);
+  color: var(--bg);
+}
+
+a { color: var(--neon); transition: opacity .2s; }
+a:hover { color: var(--neon); opacity: .8; }
+
+/* ===== Neon Utilities ===== */
+
+.neon-text {
+  text-shadow:
+    0 0 7px var(--neon-glow),
+    0 0 20px var(--neon-glow),
+    0 0 42px var(--neon-glow);
+}
+
+.neon-glow-box {
+  box-shadow:
+    0 0 8px var(--neon-glow),
+    0 0 24px rgba(255, 0, 0, .25);
+}
+
+/* ===== Navbar ===== */
+
+.navbar {
+  transition: background .3s, backdrop-filter .3s;
+  padding: .75rem 0;
+}
+
+.navbar.scrolled {
+  background: rgba(0, 0, 0, .85) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--neon) !important;
+  text-shadow:
+    0 0 7px var(--neon-glow),
+    0 0 20px var(--neon-glow);
+}
+
+/* ===== Buttons ===== */
+
+.btn-neon {
+  background: var(--neon);
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  padding: .75rem 2rem;
+  border-radius: .5rem;
+  transition: box-shadow .25s, transform .15s;
+  box-shadow: 0 0 12px var(--neon-glow), 0 0 36px rgba(255, 0, 0, .3);
+}
+
+.btn-neon:hover {
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px var(--neon-glow), 0 0 60px rgba(255, 0, 0, .45);
+}
+
+.btn-neon-outline {
+  background: transparent;
+  color: var(--neon);
+  border: 2px solid var(--neon);
+  font-weight: 700;
+  padding: .5rem 1.5rem;
+  border-radius: .5rem;
+  transition: box-shadow .25s, background .25s;
+}
+
+.btn-neon-outline:hover {
+  color: #fff;
+  background: var(--neon);
+  box-shadow: 0 0 12px var(--neon-glow);
+}
+
+/* ===== Hero ===== */
+
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.hero h1 {
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.hero .lead {
+  font-size: clamp(1rem, 2.5vw, 1.35rem);
+  color: var(--text-muted);
+}
+
+.hero-demo-video {
+  width: 100%;
+  max-width: 480px;
+  border: 2px solid var(--neon);
+  border-radius: 1rem;
+  overflow: hidden;
+  animation: pulse-glow 2.5s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 12px var(--neon-glow), 0 0 36px rgba(255, 0, 0, .15); }
+  50% { box-shadow: 0 0 24px var(--neon-glow), 0 0 72px rgba(255, 0, 0, .3); }
+}
+
+.badge-anon {
+  display: inline-block;
+  font-size: .9rem;
+  color: var(--neon);
+  border: 1px solid rgba(255, 26, 26, .35);
+  border-radius: 2rem;
+  padding: .4rem 1.25rem;
+  letter-spacing: .03em;
+}
+
+/* ===== Sections ===== */
+
+section { padding: 5rem 0; }
+
+.section-title {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 700;
+  margin-bottom: .75rem;
+}
+
+/* ===== Privacy / Anonymous Section ===== */
+
+.privacy-section {
+  background: var(--surface);
+  border-top: 1px solid rgba(255, 26, 26, .15);
+  border-bottom: 1px solid rgba(255, 26, 26, .15);
+}
+
+.icon-card {
+  background: var(--surface-alt);
+  border: 1px solid rgba(255, 255, 255, .06);
+  border-radius: .75rem;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: border-color .25s, box-shadow .25s;
+  height: 100%;
+}
+
+.icon-card:hover {
+  border-color: rgba(255, 26, 26, .3);
+  box-shadow: 0 0 18px rgba(255, 0, 0, .1);
+}
+
+.icon-card svg {
+  width: 40px;
+  height: 40px;
+  color: var(--neon);
+  margin-bottom: 1rem;
+}
+
+.icon-card h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: .5rem;
+}
+
+.icon-card p {
+  color: var(--text-muted);
+  font-size: .95rem;
+  margin: 0;
+}
+
+/* ===== How It Works ===== */
+
+.step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--neon);
+  color: var(--neon);
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 12px rgba(255, 0, 0, .2);
+}
+
+/* ===== Supported Sites ===== */
+
+.site-pill {
+  display: inline-block;
+  background: var(--surface-alt);
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 2rem;
+  padding: .4rem 1rem;
+  font-size: .9rem;
+  margin: .25rem;
+  transition: border-color .2s;
+}
+
+.site-pill:hover {
+  border-color: var(--neon);
+}
+
+.sites-expanded .site-pill {
+  font-size: .85rem;
+  padding: .3rem .85rem;
+}
+
+.sites-expanded h6 {
+  color: var(--neon);
+  font-weight: 700;
+  font-size: .85rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-top: 1.25rem;
+  margin-bottom: .5rem;
+}
+
+/* ===== FAQ Accordion ===== */
+
+.accordion-item {
+  background: var(--surface) !important;
+  border: 1px solid rgba(255, 255, 255, .06) !important;
+}
+
+.accordion-button {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: none !important;
+}
+
+.accordion-button::after {
+  filter: invert(1);
+}
+
+.accordion-button:not(.collapsed) {
+  color: var(--neon) !important;
+  background: var(--surface-alt) !important;
+}
+
+.accordion-body {
+  background: var(--surface-alt);
+  color: var(--text-muted);
+  font-size: .95rem;
+  line-height: 1.7;
+}
+
+/* ===== Footer ===== */
+
+footer {
+  border-top: 2px solid var(--neon);
+  box-shadow: 0 -4px 24px rgba(255, 0, 0, .15);
+  background: var(--surface);
+  padding: 2.5rem 0;
+}
+
+footer a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+footer a:hover {
+  color: var(--neon);
+  opacity: 1;
+}
+
+/* ===== Privacy Page ===== */
+
+.privacy-content h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-top: 2.5rem;
+  margin-bottom: .75rem;
+  color: var(--neon);
+}
+
+.privacy-content p,
+.privacy-content li {
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+.privacy-content ul {
+  padding-left: 1.25rem;
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 767.98px) {
+  .hero { text-align: center; }
+  .hero-demo-video { margin: 0 auto 2rem; max-width: 320px; }
+  section { padding: 3.5rem 0; }
+  .btn-neon { width: 100%; }
+}

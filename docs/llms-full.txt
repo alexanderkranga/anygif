@@ -1,0 +1,90 @@
+# AnyGif Bot
+
+> AnyGif is an open source, private and secure Telegram bot. It converts any video URL into a GIF, supports 1,700+ websites, costs 10 Telegram Stars per GIF, and is built so that not even we can see what you're doing. Every privacy claim is backed by public source code.
+
+## About
+
+AnyGif lets users paste any video link, choose a start time and duration (up to 10 seconds), and receive a GIF instantly in Telegram. If generation fails, Stars are automatically refunded.
+
+**Bot:** [@anygif_bot](https://t.me/anygif_bot)
+**Price:** 10 Telegram Stars per GIF
+**Max GIF length:** 10 seconds
+**Contact:** [@alexandercranga on X](https://x.com/alexandercranga)
+
+## Privacy & Anonymity
+
+We built AnyGif so that not even we can see what you're doing.
+
+- **We never know who you are** - No account, no sign-up, no profile. You're just anonymous.
+- **We never see what you send** - Your video links and requests disappear the moment your GIF is delivered.
+- **Nothing is ever stored** - There's no database of users, no history, no records. Nothing to leak.
+- **Open source** - Every privacy claim is backed by public code. Don't trust us - verify it.
+
+## How It Works
+
+1. **Send a link** - Paste any video URL from 1,700+ supported sites
+2. **Pick your moment** - Choose the start time and duration (up to 10 seconds)
+3. **Get your GIF** - Pay 10 Stars and receive your GIF instantly
+
+## Supported Sites
+
+AnyGif works with 1,700+ websites including:
+
+**Video Platforms:** YouTube, Vimeo, Dailymotion, Bilibili, Rumble
+**Social Media:** TikTok, Instagram, Twitter/X, Reddit, Facebook
+**Streaming & Gaming:** Twitch, Crunchyroll, VK Video
+**News & Media:** BBC, CNN, Al Jazeera
+**Music:** SoundCloud, Bandcamp, Audiomack
+**Other:** Streamable, Imgur, Google Drive, Archive.org
+
+Adult websites are also supported.
+
+## FAQ
+
+### What is AnyGif Bot?
+AnyGif is a Telegram bot that converts any video URL into a GIF. Just paste a link, choose the moment you want, and get your GIF delivered right in the chat.
+
+### How much does it cost?
+Each GIF costs 10 Telegram Stars. Stars are Telegram's built-in digital currency that you can purchase directly within the app.
+
+### What if the generation fails?
+If your GIF fails to generate for any reason, your 10 Stars are automatically refunded. You'll never be charged for a GIF you didn't receive.
+
+### What video sites are supported?
+AnyGif supports over 1,700 websites including YouTube, TikTok, Instagram, Twitter/X, Reddit, Vimeo, Twitch, adult sites, and many more.
+
+### What is the maximum GIF length?
+GIFs can be up to 10 seconds long. You choose the start time and duration when creating your GIF.
+
+### How do I use the bot?
+Open @anygif_bot in Telegram and send any video URL. The bot will guide you through selecting the start time and duration, then generate your GIF after payment.
+
+### How do I get the most out of the bot?
+We recommend adding AnyGif as an exception so your GIFs aren't automatically saved to your camera roll. On iOS: go to Settings → Data and Storage → Save to Photos → Private Chats → Add Exception, then select AnyGif and set it to save neither photos nor videos. On Android: go to Settings → Data and Storage → Save to Gallery → Add Exception, then select AnyGif and set it to save neither photos nor videos.
+
+### Is my data stored?
+Nothing. Your video link and request are used to create your GIF and then immediately discarded. We have no record of what you asked for, who you are, or that you ever used the bot.
+
+### How do I get Telegram Stars?
+You can purchase Telegram Stars directly within the Telegram app. Go to Settings > My Stars, or simply try to pay for a GIF and Telegram will prompt you to buy Stars.
+
+## Privacy Policy
+
+### We don't know who you are
+AnyGif (@anygif_bot) was built so that we genuinely cannot identify you. There's no account, no sign-up, and no profile. When you use the bot, you are completely anonymous - not just in policy, but by design.
+
+### We never see what you send
+When you send a video link to the bot, that link is used to create your GIF and then immediately thrown away. We do not log it, store it, or look at it. By the time your GIF arrives, the request is gone. There is no history of what you asked for.
+
+### Nothing is stored after your GIF is delivered
+Once your GIF is sent to you, nothing remains on our side. There is no database of users, no record of what was requested, and no files kept anywhere. There is literally nothing to leak, because there is nothing to keep.
+
+### Payments are handled by Telegram - not us
+You pay with Telegram Stars, Telegram's own built-in currency. The entire payment process happens inside Telegram. We never see your payment details, your card information, or anything related to how you pay.
+
+### You can verify everything
+Every privacy claim is backed by public source code. AnyGif is fully open source - anyone can read the code and confirm that it does exactly what we say.
+
+### Contact
+
+Questions? Reach out on X: [@alexandercranga](https://x.com/alexandercranga)

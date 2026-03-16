@@ -1,0 +1,29 @@
+name: Integration Tests
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            pyproject.toml
+      - name: Install ffmpeg
+        run: |
+          curl -L https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz | \
+            tar xJ --strip-components=1 -C /usr/local/bin/ --wildcards '*/ffmpeg' --wildcards '*/ffprobe'
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt -r requirements-test.txt yt-dlp==2026.3.13 curl_cffi
+      - name: Run integration tests
+        env:
+          DECODO_PROXY_URL: ${{ secrets.DECODO_PROXY_URL }}
+        run: pytest -m "integration and not slow" --override-ini="addopts="
