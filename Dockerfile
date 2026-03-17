@@ -7,7 +7,7 @@ RUN dnf install -y tar xz && \
     dnf clean all
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt yt-dlp
+RUN pip install --no-cache-dir -r requirements.txt yt-dlp==2026.3.13
 
 COPY anygif.sh /usr/local/bin/anygif
 RUN chmod +x /usr/local/bin/anygif

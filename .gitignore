@@ -24,5 +24,8 @@ infra/terraform.tfvars
 # Output
 output/
 
+# Environment
+.env
+
 # Claude
 .claude/

@@ -6,8 +6,6 @@ import os
 import pytest
 import pytest_asyncio
 import fakeredis
-from contextlib import asynccontextmanager
-
 # Set required env vars before any app imports
 os.environ.setdefault("TELEGRAM_BOT_TOKEN", "test-bot-token")
 os.environ.setdefault("TELEGRAM_WEBHOOK_SECRET", "test-secret")
@@ -16,12 +14,6 @@ os.environ.setdefault("GENERATION_PRICE_STARS", "10")
 os.environ.setdefault("SESSION_TTL_SECONDS", "600")
 
 from app import redis as redis_mod
-from app.main import app
-
-
-@asynccontextmanager
-async def _null_lifespan(app):
-    yield
 
 
 @pytest_asyncio.fixture
@@ -80,10 +72,3 @@ def telegram_calls():
     tg_mod._call = original
 
 
-@pytest.fixture
-def client(fake_redis, telegram_calls):
-    """FastAPI TestClient — lifespan disabled, fake_redis and telegram mocks pre-installed."""
-    from starlette.testclient import TestClient
-    app.router.lifespan_context = _null_lifespan
-    with TestClient(app, raise_server_exceptions=False) as c:
-        yield c

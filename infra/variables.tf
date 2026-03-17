@@ -71,3 +71,9 @@ variable "session_ttl_seconds" {
   default     = 600
   description = "Session TTL in seconds"
 }
+
+variable "github_repository" {
+  type        = string
+  default     = "alexanderkranga/anygif"
+  description = "GitHub repository (owner/name) for OIDC trust policy"
+}

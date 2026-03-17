@@ -1,0 +1,59 @@
+name: Production Deploy
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: eu-central-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform init
+        working-directory: infra
+        run: terraform init
+
+      - name: Build and push Docker image to ECR
+        id: docker
+        run: |
+          ECR_REPO_URL=$(cd infra && terraform output -raw ecr_repository_url)
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          ECR_REGISTRY="$ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com"
+          IMAGE_TAG="${{ github.sha }}"
+
+          aws ecr get-login-password --region eu-central-1 | \
+            docker login --username AWS --password-stdin "$ECR_REGISTRY"
+
+          docker build --platform linux/amd64 -t "anygif:$IMAGE_TAG" .
+          docker tag "anygif:$IMAGE_TAG" "$ECR_REPO_URL:$IMAGE_TAG"
+          docker push "$ECR_REPO_URL:$IMAGE_TAG"
+
+          echo "image_tag=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Terraform apply
+        working-directory: infra
+        run: |
+          terraform apply -auto-approve \
+            -var="image_tag=${{ steps.docker.outputs.image_tag }}" \
+            -var="telegram_bot_token_arn=${{ secrets.TELEGRAM_BOT_TOKEN_ARN }}" \
+            -var="telegram_webhook_secret_arn=${{ secrets.TELEGRAM_WEBHOOK_SECRET_ARN }}"
+
+      - name: Wait for Lambda functions to update
+        run: |
+          aws lambda wait function-updated --function-name anygif-webhook --region eu-central-1
+          aws lambda wait function-updated --function-name anygif-worker  --region eu-central-1

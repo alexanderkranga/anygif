@@ -33,3 +33,8 @@ output "dlq_url" {
   value       = aws_sqs_queue.gif_worker_dlq.url
   description = "Dead-letter queue URL for failed payments"
 }
+
+output "github_actions_role_arn" {
+  value       = aws_iam_role.github_actions.arn
+  description = "IAM role ARN for GitHub Actions OIDC — add to GitHub Secrets as AWS_ROLE_ARN"
+}
