@@ -14,34 +14,28 @@ variable "pinned_ami_id" {
   default     = ""
 }
 
-variable "app_port" {
-  type        = number
-  default     = 8000
-  description = "Port the container listens on"
-}
-
-variable "cpu" {
-  type        = number
-  default     = 1024
-  description = "Task CPU units (1024 = 1 vCPU)"
-}
-
-variable "memory" {
-  type        = number
-  default     = 2048
-  description = "Task memory in MB"
-}
-
-variable "min_capacity" {
-  type        = number
-  default     = 1
-  description = "Minimum (and initial) number of ECS tasks"
-}
-
 variable "image_tag" {
   type        = string
   default     = "latest"
   description = "Docker image tag to run. Change this to roll out a new build."
+}
+
+variable "webhook_memory" {
+  type        = number
+  default     = 512
+  description = "Webhook Lambda memory in MB"
+}
+
+variable "worker_memory" {
+  type        = number
+  default     = 2048
+  description = "Worker Lambda memory in MB"
+}
+
+variable "worker_timeout" {
+  type        = number
+  default     = 180
+  description = "Worker Lambda timeout in seconds"
 }
 
 variable "redis_node_type" {

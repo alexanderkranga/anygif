@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build the anygif Docker image, push it to ECR, and trigger a rolling deploy.
+# Build the anygif Docker image, push it to ECR, and update Lambda functions.
 #
 # Usage:
 #   ./deploy.sh                  # build + push + deploy
@@ -35,5 +35,13 @@ docker push "$ECR_REPO_URL:$IMAGE_TAG"
 echo ""
 echo "Pushed: $ECR_REPO_URL:$IMAGE_TAG"
 echo ""
-echo "To trigger a rolling deployment run:"
-echo "  aws ecs update-service --cluster anygif --service anygif --force-new-deployment --region $AWS_REGION"
+
+echo "Updating Lambda functions..."
+aws lambda update-function-code --function-name anygif-webhook --image-uri "$ECR_REPO_URL:$IMAGE_TAG" --region "$AWS_REGION"
+aws lambda update-function-code --function-name anygif-worker  --image-uri "$ECR_REPO_URL:$IMAGE_TAG" --region "$AWS_REGION"
+
+echo "Waiting for functions to be updated..."
+aws lambda wait function-updated --function-name anygif-webhook --region "$AWS_REGION"
+aws lambda wait function-updated --function-name anygif-worker  --region "$AWS_REGION"
+
+echo "Deploy complete."

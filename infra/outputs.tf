@@ -18,12 +18,22 @@ output "redis_endpoint" {
   description = "ElastiCache Redis endpoint"
 }
 
-output "ecs_cluster_name" {
-  value       = aws_ecs_cluster.main.name
-  description = "ECS cluster name"
+output "webhook_lambda_name" {
+  value       = aws_lambda_function.webhook.function_name
+  description = "Webhook Lambda function name"
 }
 
-output "ecs_service_name" {
-  value       = aws_ecs_service.app.name
-  description = "ECS service name"
+output "worker_lambda_name" {
+  value       = aws_lambda_function.worker.function_name
+  description = "Worker Lambda function name"
+}
+
+output "sqs_queue_url" {
+  value       = aws_sqs_queue.gif_worker.url
+  description = "SQS queue URL for GIF worker"
+}
+
+output "dlq_url" {
+  value       = aws_sqs_queue.gif_worker_dlq.url
+  description = "Dead-letter queue URL for failed payments"
 }

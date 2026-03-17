@@ -1,22 +1,17 @@
-FROM python:3.12-slim
+FROM public.ecr.aws/lambda/python:3.12
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends ffmpeg && \
-    pip install --no-cache-dir yt-dlp && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /app
+# Static ffmpeg binary (Amazon Linux 2023 doesn't have ffmpeg in default repos)
+RUN dnf install -y tar xz && \
+    curl -L https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz | \
+    tar xJ --strip-components=1 -C /usr/local/bin/ --wildcards '*/ffmpeg' && \
+    dnf clean all
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt yt-dlp
 
 COPY anygif.sh /usr/local/bin/anygif
 RUN chmod +x /usr/local/bin/anygif
 
-RUN mkdir -p /output
+COPY app/ ${LAMBDA_TASK_ROOT}/app/
 
-COPY app/ app/
-
-EXPOSE 8000
-
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["app.lambda_webhook.handler"]

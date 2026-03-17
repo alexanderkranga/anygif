@@ -11,8 +11,8 @@ resource "aws_security_group" "redis" {
     from_port       = 6379
     to_port         = 6379
     protocol        = "tcp"
-    security_groups = [aws_security_group.ecs_tasks.id]
-    description     = "Redis from ECS tasks"
+    security_groups = [aws_security_group.lambda.id]
+    description     = "Redis from Lambda functions"
   }
 
   egress {
