@@ -13,4 +13,4 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Sitemap: https://alexanderkranga.github.io/anygif/sitemap.xml
+Sitemap: https://anygifbot.com/sitemap.xml

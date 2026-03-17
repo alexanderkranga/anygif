@@ -6,8 +6,8 @@ AnyGif lets users paste any video link, choose a start time and duration (up to 
 
 ## Pages
 
-- [Home](https://alexanderkranga.github.io/anygif/): Landing page with features, how it works, supported sites, and FAQ
-- [Privacy Policy](https://alexanderkranga.github.io/anygif/privacy.html): Full privacy policy — zero data collection, fully anonymous service
+- [Home](https://anygifbot.com/): Landing page with features, how it works, supported sites, and FAQ
+- [Privacy Policy](https://anygifbot.com/privacy.html): Full privacy policy — zero data collection, fully anonymous service
 
 ## Links
 

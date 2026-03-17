@@ -124,33 +124,13 @@ a:hover { color: var(--neon); opacity: .8; }
   color: var(--text-muted);
 }
 
-.hero-demo-placeholder {
+.hero-demo-video {
   width: 100%;
   max-width: 480px;
-  aspect-ratio: 4 / 3;
   border: 2px solid var(--neon);
   border-radius: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
   overflow: hidden;
   animation: pulse-glow 2.5s ease-in-out infinite;
-}
-
-.hero-demo-placeholder::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 1rem;
-  background: radial-gradient(ellipse at center, rgba(255, 0, 0, .08) 0%, transparent 70%);
-}
-
-.hero-demo-placeholder svg {
-  width: 64px;
-  height: 64px;
-  opacity: .5;
-  color: var(--neon);
 }
 
 @keyframes pulse-glow {
@@ -343,7 +323,7 @@ footer a:hover {
 
 @media (max-width: 767.98px) {
   .hero { text-align: center; }
-  .hero-demo-placeholder { margin: 0 auto 2rem; max-width: 320px; }
+  .hero-demo-video { margin: 0 auto 2rem; max-width: 320px; }
   section { padding: 3.5rem 0; }
   .btn-neon { width: 100%; }
 }
