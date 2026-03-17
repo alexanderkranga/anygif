@@ -55,7 +55,7 @@ async def handle_start(msg: Message) -> None:
         f"Just give me a URL, a start time, and a duration (max 10 seconds).\n\n"
         f"Works with YouTube, Vimeo, Twitter, TikTok, Reddit, Instagram, "
         f"and 1000+ other sites.\n\n"
-        f"Price: {price} Star per generation.\n\n"
+        f"Price: {price} Stars per generation.\n\n"
         f"How to use:\n"
         f"  /gif <URL> <start_time> <duration_seconds>\n\n"
         f"Example:\n"

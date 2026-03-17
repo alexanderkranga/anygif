@@ -62,7 +62,7 @@ variable "telegram_webhook_secret_arn" {
 
 variable "generation_price_stars" {
   type        = number
-  default     = 1
+  default     = 10
   description = "Price per GIF generation in Telegram Stars"
 }
 

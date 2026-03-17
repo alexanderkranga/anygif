@@ -92,7 +92,7 @@ class TestWebhookRouting:
                 "chat": {"id": 42, "type": "private"},
                 "successful_payment": {
                     "currency": "XTR",
-                    "total_amount": 1,
+                    "total_amount": 10,
                     "invoice_payload": "session-123",
                     "telegram_payment_charge_id": "charge-1",
                     "provider_payment_charge_id": "prov-1",
@@ -118,7 +118,7 @@ class TestWebhookRouting:
                 "id": "query-1",
                 "from": {"id": 42, "is_bot": False, "first_name": "Test"},
                 "currency": "XTR",
-                "total_amount": 1,
+                "total_amount": 10,
                 "invoice_payload": "session-123",
             },
         }

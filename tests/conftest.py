@@ -12,7 +12,7 @@ from contextlib import asynccontextmanager
 os.environ.setdefault("TELEGRAM_BOT_TOKEN", "test-bot-token")
 os.environ.setdefault("TELEGRAM_WEBHOOK_SECRET", "test-secret")
 os.environ.setdefault("REDIS_URL", "redis://localhost:6379")
-os.environ.setdefault("GENERATION_PRICE_STARS", "1")
+os.environ.setdefault("GENERATION_PRICE_STARS", "10")
 os.environ.setdefault("SESSION_TTL_SECONDS", "600")
 os.environ.setdefault("S3_BUCKET", "test-bucket")
 

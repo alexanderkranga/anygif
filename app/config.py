@@ -16,7 +16,7 @@ def get_redis_url() -> str:
 
 
 def get_generation_price() -> int:
-    return int(os.getenv("GENERATION_PRICE_STARS", "1"))
+    return int(os.getenv("GENERATION_PRICE_STARS", "10"))
 
 
 def get_session_ttl() -> int:
