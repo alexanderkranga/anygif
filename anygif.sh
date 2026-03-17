@@ -101,9 +101,28 @@ echo "  FPS:      $FPS"
 echo "  Proxy:    ${PROXY:-none}"
 echo "  Output:   $OUTPUT"
 
-# Default: extract direct URL via yt-dlp, then ffmpeg seeks/trims from it.
-# Some platforms (e.g. TikTok) use short-lived signed URLs that expire before
-# ffmpeg can fetch them. For those, download the full video first via yt-dlp.
+# When proxied, video URLs are often IP-signed to the proxy's IP,
+# so ffmpeg must also route through the proxy.
+if [ -n "$PROXY" ]; then
+  export http_proxy="$PROXY"
+  export https_proxy="$PROXY"
+fi
+
+run_ffmpeg() {
+  ffmpeg -hide_banner -loglevel warning \
+    -ss "$START_SEC" -t "$DURATION" \
+    -i "$1" \
+    -vf "fps=${FPS},${SCALE_FILTER}" \
+    -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p \
+    -an -movflags +faststart \
+    -y "$OUTPUT"
+}
+
+# Strategy 1: Extract direct URL, ffmpeg streams from it (fast, low bandwidth).
+# Strategy 2: Download full video via yt-dlp, ffmpeg processes local file (reliable).
+#
+# Try strategy 1 first. If ffmpeg fails (e.g. HLS segments expire, HTTP 410),
+# fall back to strategy 2. Some sites (TikTok) are known to always need strategy 2.
 
 needs_download() {
   case "$URL" in
@@ -112,7 +131,8 @@ needs_download() {
   esac
 }
 
-if needs_download; then
+download_and_process() {
+  echo "Downloading full video via yt-dlp..."
   TMPDIR="${TMPDIR:-/tmp}"
   RAW_VIDEO=$(mktemp "${TMPDIR}/anygif_raw_XXXXXX.mp4")
   trap 'rm -f "$RAW_VIDEO"' EXIT
@@ -125,8 +145,13 @@ if needs_download; then
     exit 1
   fi
 
-  FFMPEG_INPUT="$RAW_VIDEO"
+  run_ffmpeg "$RAW_VIDEO"
+}
+
+if needs_download; then
+  download_and_process
 else
+  # Try streaming first
   VIDEO_URL=$(yt-dlp --no-playlist -f "bv*[height<=720]/bv*" \
     ${YTDLP_PROXY_ARGS[@]+"${YTDLP_PROXY_ARGS[@]}"} --get-url "$URL" 2>&1 | grep -E '^https://' | head -1)
 
@@ -135,23 +160,16 @@ else
     exit 1
   fi
 
-  FFMPEG_INPUT="$VIDEO_URL"
-fi
+  # run_ffmpeg may fail if URLs are short-lived (HLS 410, etc.)
+  # The `|| true` prevents set -e from exiting so we can fall back.
+  STREAM_OK=0
+  run_ffmpeg "$VIDEO_URL" || STREAM_OK=$?
 
-# When proxied, video URLs are often IP-signed to the proxy's IP,
-# so ffmpeg must also route through the proxy.
-if [ -n "$PROXY" ]; then
-  export http_proxy="$PROXY"
-  export https_proxy="$PROXY"
+  if [ "$STREAM_OK" -ne 0 ]; then
+    echo "Stream failed (rc=$STREAM_OK), falling back to full download..."
+    download_and_process
+  fi
 fi
-
-ffmpeg -hide_banner -loglevel warning \
-  -ss "$START_SEC" -t "$DURATION" \
-  -i "$FFMPEG_INPUT" \
-  -vf "fps=${FPS},${SCALE_FILTER}" \
-  -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p \
-  -an -movflags +faststart \
-  -y "$OUTPUT"
 
 FILESIZE=$(du -h "$OUTPUT" | cut -f1)
 echo "Done! Output: $OUTPUT ($FILESIZE)"
