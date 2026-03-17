@@ -89,19 +89,45 @@ echo "  Size:     $SIZE_LABEL"
 echo "  FPS:      $FPS"
 echo "  Output:   $OUTPUT"
 
-# Download the relevant portion and convert to MP4 (looping, no audio)
-# Use yt-dlp to get the best format URL, then ffmpeg handles seeking
+# Default: extract direct URL via yt-dlp, then ffmpeg seeks/trims from it.
+# Some platforms (e.g. TikTok) use short-lived signed URLs that expire before
+# ffmpeg can fetch them. For those, download the full video first via yt-dlp.
 
-VIDEO_URL=$(yt-dlp --no-playlist -f "bv*+ba/b" --get-url "$URL" 2>&1 | grep -E '^https://' | head -1)
+needs_download() {
+  case "$URL" in
+    *tiktok.com*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
 
-if [ -z "$VIDEO_URL" ]; then
-  echo "Error: yt-dlp failed to extract video URL"
-  exit 1
+if needs_download; then
+  TMPDIR="${TMPDIR:-/tmp}"
+  RAW_VIDEO=$(mktemp "${TMPDIR}/anygif_raw_XXXXXX.mp4")
+  trap 'rm -f "$RAW_VIDEO"' EXIT
+
+  yt-dlp --no-playlist -f "bv*+ba/b" --merge-output-format mp4 \
+    -o "$RAW_VIDEO" --force-overwrites "$URL"
+
+  if [ ! -s "$RAW_VIDEO" ]; then
+    echo "Error: yt-dlp failed to download video"
+    exit 1
+  fi
+
+  FFMPEG_INPUT="$RAW_VIDEO"
+else
+  VIDEO_URL=$(yt-dlp --no-playlist -f "bv*+ba/b" --get-url "$URL" 2>&1 | grep -E '^https://' | head -1)
+
+  if [ -z "$VIDEO_URL" ]; then
+    echo "Error: yt-dlp failed to extract video URL"
+    exit 1
+  fi
+
+  FFMPEG_INPUT="$VIDEO_URL"
 fi
 
 ffmpeg -hide_banner -loglevel warning \
   -ss "$START_SEC" -t "$DURATION" \
-  -i "$VIDEO_URL" \
+  -i "$FFMPEG_INPUT" \
   -vf "fps=${FPS},${SCALE_FILTER}" \
   -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p \
   -an -movflags +faststart \
