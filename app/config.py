@@ -21,3 +21,8 @@ def get_generation_price() -> int:
 
 def get_session_ttl() -> int:
     return int(os.getenv("SESSION_TTL_SECONDS", "600"))
+
+
+def get_proxy_url() -> str | None:
+    """Decodo residential proxy URL, e.g. http://user:pass@gate.decodo.com:7000"""
+    return os.getenv("DECODO_PROXY_URL")

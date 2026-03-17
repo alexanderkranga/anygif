@@ -58,6 +58,7 @@ resource "aws_iam_role_policy" "lambda_secrets" {
       Resource = [
         var.telegram_bot_token_arn,
         var.telegram_webhook_secret_arn,
+        var.decodo_proxy_url_arn,
       ]
     }]
   })
@@ -73,6 +74,10 @@ data "aws_secretsmanager_secret_version" "bot_token" {
 
 data "aws_secretsmanager_secret_version" "webhook_secret" {
   secret_id = var.telegram_webhook_secret_arn
+}
+
+data "aws_secretsmanager_secret_version" "decodo_proxy_url" {
+  secret_id = var.decodo_proxy_url_arn
 }
 
 # ---------------------------------------------------------------------------
@@ -176,6 +181,7 @@ resource "aws_lambda_function" "worker" {
       REDIS_URL              = "redis://${aws_elasticache_cluster.redis.cache_nodes[0].address}:6379"
       GENERATION_PRICE_STARS = tostring(var.generation_price_stars)
       SESSION_TTL_SECONDS    = tostring(var.session_ttl_seconds)
+      DECODO_PROXY_URL       = data.aws_secretsmanager_secret_version.decodo_proxy_url.secret_string
     }
   }
 

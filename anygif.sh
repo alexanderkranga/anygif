@@ -11,11 +11,13 @@ usage() {
   echo "  output   Output filename (default: output.mp4)"
   echo ""
   echo "Options:"
-  echo "  --fps N  Frames per second (default: 15)"
+  echo "  --fps N      Frames per second (default: 15)"
+  echo "  --proxy URL  Route yt-dlp and ffmpeg traffic through an HTTP proxy"
   exit 1
 }
 
 FPS=15
+PROXY=""
 
 # Parse options
 while [[ $# -gt 0 && "$1" == --* ]]; do
@@ -26,6 +28,10 @@ while [[ $# -gt 0 && "$1" == --* ]]; do
         echo "Error: fps must be a positive integer"
         exit 1
       fi
+      shift 2
+      ;;
+    --proxy)
+      PROXY="$2"
       shift 2
       ;;
     *)
@@ -82,11 +88,17 @@ if [ "$DURATION" -le 0 ]; then
   exit 1
 fi
 
+YTDLP_PROXY_ARGS=()
+if [ -n "$PROXY" ]; then
+  YTDLP_PROXY_ARGS=(--proxy "$PROXY")
+fi
+
 echo "Downloading and extracting clip..."
 echo "  URL:      $URL"
 echo "  Range:    $START -> $END (${DURATION}s)"
 echo "  Size:     $SIZE_LABEL"
 echo "  FPS:      $FPS"
+echo "  Proxy:    ${PROXY:-none}"
 echo "  Output:   $OUTPUT"
 
 # Default: extract direct URL via yt-dlp, then ffmpeg seeks/trims from it.
@@ -105,8 +117,8 @@ if needs_download; then
   RAW_VIDEO=$(mktemp "${TMPDIR}/anygif_raw_XXXXXX.mp4")
   trap 'rm -f "$RAW_VIDEO"' EXIT
 
-  yt-dlp --no-playlist -f "bv*+ba/b" --merge-output-format mp4 \
-    -o "$RAW_VIDEO" --force-overwrites "$URL"
+  yt-dlp --no-playlist -f "bv*[height<=720]/bv*" --no-audio --no-subtitles \
+    "${YTDLP_PROXY_ARGS[@]}" -o "$RAW_VIDEO" --force-overwrites "$URL"
 
   if [ ! -s "$RAW_VIDEO" ]; then
     echo "Error: yt-dlp failed to download video"
@@ -115,7 +127,8 @@ if needs_download; then
 
   FFMPEG_INPUT="$RAW_VIDEO"
 else
-  VIDEO_URL=$(yt-dlp --no-playlist -f "bv*+ba/b" --get-url "$URL" 2>&1 | grep -E '^https://' | head -1)
+  VIDEO_URL=$(yt-dlp --no-playlist -f "bv*[height<=720]/bv*" --no-audio --no-subtitles \
+    "${YTDLP_PROXY_ARGS[@]}" --get-url "$URL" 2>&1 | grep -E '^https://' | head -1)
 
   if [ -z "$VIDEO_URL" ]; then
     echo "Error: yt-dlp failed to extract video URL"
@@ -123,6 +136,13 @@ else
   fi
 
   FFMPEG_INPUT="$VIDEO_URL"
+fi
+
+# When proxied, video URLs are often IP-signed to the proxy's IP,
+# so ffmpeg must also route through the proxy.
+if [ -n "$PROXY" ]; then
+  export http_proxy="$PROXY"
+  export https_proxy="$PROXY"
 fi
 
 ffmpeg -hide_banner -loglevel warning \

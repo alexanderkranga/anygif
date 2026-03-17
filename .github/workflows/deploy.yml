@@ -51,7 +51,8 @@ jobs:
           terraform apply -auto-approve \
             -var="image_tag=${{ steps.docker.outputs.image_tag }}" \
             -var="telegram_bot_token_arn=${{ secrets.TELEGRAM_BOT_TOKEN_ARN }}" \
-            -var="telegram_webhook_secret_arn=${{ secrets.TELEGRAM_WEBHOOK_SECRET_ARN }}"
+            -var="telegram_webhook_secret_arn=${{ secrets.TELEGRAM_WEBHOOK_SECRET_ARN }}" \
+            -var="decodo_proxy_url_arn=${{ secrets.DECODO_PROXY_URL_ARN }}"
 
       - name: Wait for Lambda functions to update
         run: |

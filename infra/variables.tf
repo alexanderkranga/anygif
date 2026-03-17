@@ -48,6 +48,7 @@ variable "redis_node_type" {
 # Secrets Manager ARNs — create these before applying:
 #   aws secretsmanager create-secret --name anygif/telegram-bot-token     --secret-string "your-value" --region eu-central-1
 #   aws secretsmanager create-secret --name anygif/telegram-webhook-secret --secret-string "your-value" --region eu-central-1
+#   aws secretsmanager create-secret --name anygif/decodo-proxy-url       --secret-string "http://user:pass@gate.decodo.com:7000" --region eu-central-1
 # ---------------------------------------------------------------------------
 
 variable "telegram_bot_token_arn" {
@@ -58,6 +59,11 @@ variable "telegram_bot_token_arn" {
 variable "telegram_webhook_secret_arn" {
   type        = string
   description = "Secrets Manager ARN for TELEGRAM_WEBHOOK_SECRET"
+}
+
+variable "decodo_proxy_url_arn" {
+  type        = string
+  description = "Secrets Manager ARN for DECODO_PROXY_URL (residential proxy)"
 }
 
 variable "generation_price_stars" {
