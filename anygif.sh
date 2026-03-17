@@ -117,8 +117,8 @@ if needs_download; then
   RAW_VIDEO=$(mktemp "${TMPDIR}/anygif_raw_XXXXXX.mp4")
   trap 'rm -f "$RAW_VIDEO"' EXIT
 
-  yt-dlp --no-playlist -f "bv*[height<=720]/bv*" --no-audio --no-subtitles \
-    "${YTDLP_PROXY_ARGS[@]}" -o "$RAW_VIDEO" --force-overwrites "$URL"
+  yt-dlp --no-playlist -f "bv*[height<=720]/bv*" \
+    ${YTDLP_PROXY_ARGS[@]+"${YTDLP_PROXY_ARGS[@]}"} -o "$RAW_VIDEO" --force-overwrites "$URL"
 
   if [ ! -s "$RAW_VIDEO" ]; then
     echo "Error: yt-dlp failed to download video"
@@ -127,8 +127,8 @@ if needs_download; then
 
   FFMPEG_INPUT="$RAW_VIDEO"
 else
-  VIDEO_URL=$(yt-dlp --no-playlist -f "bv*[height<=720]/bv*" --no-audio --no-subtitles \
-    "${YTDLP_PROXY_ARGS[@]}" --get-url "$URL" 2>&1 | grep -E '^https://' | head -1)
+  VIDEO_URL=$(yt-dlp --no-playlist -f "bv*[height<=720]/bv*" \
+    ${YTDLP_PROXY_ARGS[@]+"${YTDLP_PROXY_ARGS[@]}"} --get-url "$URL" 2>&1 | grep -E '^https://' | head -1)
 
   if [ -z "$VIDEO_URL" ]; then
     echo "Error: yt-dlp failed to extract video URL"
