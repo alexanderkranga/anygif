@@ -1,0 +1,103 @@
+# AnyGif Bot
+
+> AnyGif is a fully anonymous Telegram bot that converts any video URL into a GIF. It supports 1,700+ websites, costs 10 Telegram Stars per GIF, and collects zero user data.
+
+## About
+
+AnyGif lets users paste any video link, choose a start time and duration (up to 10 seconds), and receive a GIF instantly in Telegram. If generation fails, Stars are automatically refunded.
+
+**Bot:** [@anygif_bot](https://t.me/anygif_bot)
+**Price:** 10 Telegram Stars per GIF
+**Max GIF length:** 10 seconds
+**Contact:** [@alexandercranga on X](https://x.com/alexandercranga)
+
+## Privacy & Anonymity
+
+AnyGif is fully anonymous and collects zero data:
+
+- No user IDs or chat IDs are stored
+- No video URLs are collected or logged
+- No generated GIFs or links are stored anywhere
+- No cookies, no analytics, no tracking on the website
+- No personal information of any kind
+- No accounts or sign-ups required
+
+Videos are processed in real-time and immediately discarded. Nothing persists.
+
+## How It Works
+
+1. **Send a link** — Paste any video URL from 1,700+ supported sites
+2. **Pick your moment** — Choose the start time and duration (up to 10 seconds)
+3. **Get your GIF** — Pay 10 Stars and receive your GIF instantly
+
+## Supported Sites
+
+AnyGif works with 1,700+ websites including:
+
+**Video Platforms:** YouTube, Vimeo, Dailymotion, Bilibili, Rumble
+**Social Media:** TikTok, Instagram, Twitter/X, Reddit, Facebook
+**Streaming & Gaming:** Twitch, Crunchyroll, VK Video
+**News & Media:** BBC, CNN, Al Jazeera
+**Music:** SoundCloud, Bandcamp, Audiomack
+**Other:** Streamable, Imgur, Google Drive, Archive.org
+
+Adult websites are also supported.
+
+## FAQ
+
+### What is AnyGif Bot?
+AnyGif is a Telegram bot that converts any video URL into a GIF. Just paste a link, choose the moment you want, and get your GIF delivered right in the chat.
+
+### How much does it cost?
+Each GIF costs 10 Telegram Stars. Stars are Telegram's built-in digital currency that you can purchase directly within the app.
+
+### What if the generation fails?
+If your GIF fails to generate for any reason, your 10 Stars are automatically refunded. You'll never be charged for a GIF you didn't receive.
+
+### What video sites are supported?
+AnyGif supports over 1,700 websites including YouTube, TikTok, Instagram, Twitter/X, Reddit, Vimeo, Twitch, adult sites, and many more.
+
+### What is the maximum GIF length?
+GIFs can be up to 10 seconds long. You choose the start time and duration when creating your GIF.
+
+### How do I use the bot?
+Open @anygif_bot in Telegram and send any video URL. The bot will guide you through selecting the start time and duration, then generate your GIF after payment.
+
+### Is my data stored?
+No. AnyGif is fully anonymous and collects zero data. No user IDs, chat IDs, video URLs, or generated GIFs are stored. Videos are processed in real-time and immediately discarded.
+
+### How do I get Telegram Stars?
+You can purchase Telegram Stars directly within the Telegram app. Go to Settings > My Stars, or simply try to pay for a GIF and Telegram will prompt you to buy Stars.
+
+## Privacy Policy
+
+AnyGif Bot (@anygif_bot) is a fully anonymous Telegram bot service. Your privacy isn't just a feature — it's a core design principle.
+
+### Data We Do NOT Collect
+
+- No user IDs or chat IDs are stored
+- No video URLs are collected or logged
+- No generated GIFs or links are stored anywhere
+- No cookies, no analytics, no tracking on this website
+- No personal information of any kind
+
+### How the Bot Works
+
+When you send a video URL to AnyGif Bot, the video is processed in real-time to generate your GIF. Once the GIF is delivered to you in Telegram, all temporary processing data is immediately discarded. Nothing persists on our servers — no URLs, no files, no metadata.
+
+### Payments
+
+All payments are handled entirely by Telegram's Stars system. AnyGif does not process, access, or store any payment information.
+
+### Third-Party Services
+
+- **Telegram Bot API** — for receiving messages and sending GIFs
+- **Cloud infrastructure** — for real-time video processing only, no data retention
+
+### Your Rights
+
+You can block or delete the bot at any time. Since no data is collected, there is nothing to request, export, or delete.
+
+### Contact
+
+Questions? Reach out on X: [@alexandercranga](https://x.com/alexandercranga)
