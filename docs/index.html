@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AnyGif - Turn Any Video Into a GIF | Telegram Bot</title>
+  <meta name="description" content="AnyGif is a fully anonymous Telegram bot that converts any video URL into a GIF. No data collected, no tracking. Works with 1,700+ sites.">
+  <link rel="canonical" href="https://alexanderkranga.github.io/anygif">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="AnyGif - Turn Any Video Into a GIF">
+  <meta property="og:description" content="Fully anonymous Telegram bot. Paste a link, pick a moment, get your GIF. Works with 1,700+ sites.">
+  <meta property="og:url" content="https://alexanderkranga.github.io/anygif">
+  <meta property="og:image" content="https://alexanderkranga.github.io/anygif/assets/og-image.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AnyGif - Turn Any Video Into a GIF">
+  <meta name="twitter:description" content="Fully anonymous Telegram bot. Paste a link, pick a moment, get your GIF.">
+  <meta name="twitter:image" content="https://alexanderkranga.github.io/anygif/assets/og-image.png">
+
+  <!-- Favicon -->
+  <link rel="icon" href="assets/favicon.ico">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "AnyGif Bot",
+    "operatingSystem": "Telegram",
+    "applicationCategory": "MultimediaApplication",
+    "description": "Fully anonymous Telegram bot that converts any video URL into a GIF. Works with 1,700+ sites.",
+    "url": "https://t.me/anygif_bot",
+    "offers": {
+      "@type": "Offer",
+      "price": "10",
+      "priceCurrency": "XTR"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <!-- ===== Navbar ===== -->
+  <nav class="navbar navbar-dark navbar-expand-md fixed-top">
+    <div class="container">
+      <a class="navbar-brand neon-text" href="#">AnyGif</a>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+        <ul class="navbar-nav align-items-center gap-2">
+          <li class="nav-item"><a class="nav-link" href="#how-it-works">How It Works</a></li>
+          <li class="nav-item"><a class="nav-link" href="#sites">Supported Sites</a></li>
+          <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
+          <li class="nav-item ms-md-2">
+            <a class="btn btn-neon-outline btn-sm" href="https://t.me/anygif_bot" target="_blank" rel="noopener">Open in Telegram</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== Hero ===== -->
+  <section class="hero">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+          <h1>Turn Any Video<br>Into a <span class="neon-text" style="color:var(--neon)">GIF</span></h1>
+          <p class="lead mt-3 mb-3">Paste a link. Pick a moment. Get your GIF.</p>
+          <p class="badge-anon mb-4">Fully Anonymous &middot; No Data Collected &middot; No Tracking</p>
+          <!-- Video placeholder: visible here on mobile, moves to right column on lg -->
+          <div class="d-lg-none d-flex justify-content-center mb-4">
+            <div class="hero-demo-placeholder">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z"/>
+              </svg>
+            </div>
+          </div>
+          <div>
+            <a class="btn btn-neon btn-lg" href="https://t.me/anygif_bot" target="_blank" rel="noopener">Start Making GIFs</a>
+          </div>
+          <p class="mt-3 small" style="color:var(--text-muted)">10 Stars per GIF &middot; Automatic refund if generation fails</p>
+        </div>
+        <!-- Video placeholder: desktop only, right column -->
+        <div class="col-lg-6 d-none d-lg-flex justify-content-center">
+          <div class="hero-demo-placeholder">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Anonymous & Private ===== -->
+  <section class="privacy-section" id="privacy-highlight">
+    <div class="container text-center">
+      <h2 class="section-title">Your Privacy, <span class="neon-text" style="color:var(--neon)">Guaranteed</span></h2>
+      <p class="mb-5" style="color:var(--text-muted)">AnyGif is built from the ground up to know nothing about you.</p>
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-4">
+          <div class="icon-card">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
+            </svg>
+            <h3>100% Anonymous</h3>
+            <p>No user IDs, no chat IDs, no URLs stored. We literally don't know who you are.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="icon-card">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12c1.292 4.338 5.31 7.5 10.066 7.5.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/>
+            </svg>
+            <h3>Zero Data Collection</h3>
+            <p>Nothing is logged, tracked, or stored. No cookies, no analytics - ever.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="icon-card">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
+            </svg>
+            <h3>No Accounts Needed</h3>
+            <p>No sign-ups, no registration. Just open the bot and start creating GIFs.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== How It Works ===== -->
+  <section id="how-it-works">
+    <div class="container text-center">
+      <h2 class="section-title">How It Works</h2>
+      <p class="mb-5" style="color:var(--text-muted)">Three steps. That's it.</p>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="step-number">1</div>
+          <h3 class="h5 fw-bold mb-2">Send a Link</h3>
+          <p style="color:var(--text-muted)">Paste any video URL from 1,700+ supported sites.</p>
+        </div>
+        <div class="col-md-4">
+          <div class="step-number">2</div>
+          <h3 class="h5 fw-bold mb-2">Pick Your Moment</h3>
+          <p style="color:var(--text-muted)">Choose the start time and duration - up to 10 seconds.</p>
+        </div>
+        <div class="col-md-4">
+          <div class="step-number">3</div>
+          <h3 class="h5 fw-bold mb-2">Get Your GIF</h3>
+          <p style="color:var(--text-muted)">Pay 10 Stars and receive your GIF instantly.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Supported Sites ===== -->
+  <section class="privacy-section" id="sites">
+    <div class="container text-center">
+      <h2 class="section-title">Works with <span class="neon-text" style="color:var(--neon)">1,700+</span> Sites</h2>
+      <p class="mb-4" style="color:var(--text-muted)">If it's a video on the internet, chances are we support it.</p>
+
+      <div class="mb-4">
+        <span class="site-pill">YouTube</span>
+        <span class="site-pill">TikTok</span>
+        <span class="site-pill">Instagram</span>
+        <span class="site-pill">Twitter / X</span>
+        <span class="site-pill">Reddit</span>
+        <span class="site-pill">Vimeo</span>
+        <span class="site-pill">Twitch</span>
+        <span class="site-pill">Facebook</span>
+        <span class="site-pill">Dailymotion</span>
+        <span class="site-pill">Bilibili</span>
+        <span class="site-pill">SoundCloud</span>
+        <span class="site-pill">Tumblr</span>
+      </div>
+
+      <p>
+        <button class="btn btn-neon-outline btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#allSites" aria-expanded="false" aria-controls="allSites">
+          View all 1,700+ supported sites
+        </button>
+      </p>
+
+      <div class="collapse" id="allSites">
+        <div class="sites-expanded text-start mt-4 p-4 rounded-3" style="background:var(--surface-alt)">
+          <h6>Video Platforms</h6>
+          <span class="site-pill">YouTube</span>
+          <span class="site-pill">Vimeo</span>
+          <span class="site-pill">Dailymotion</span>
+          <span class="site-pill">Bilibili</span>
+          <span class="site-pill">Rumble</span>
+
+          <h6>Social Media</h6>
+          <span class="site-pill">TikTok</span>
+          <span class="site-pill">Instagram</span>
+          <span class="site-pill">Twitter / X</span>
+          <span class="site-pill">Reddit</span>
+          <span class="site-pill">Facebook</span>
+
+          <h6>Streaming & Gaming</h6>
+          <span class="site-pill">Twitch</span>
+          <span class="site-pill">Crunchyroll</span>
+          <span class="site-pill">VK Video</span>
+
+          <h6>News & Media</h6>
+          <span class="site-pill">BBC</span>
+          <span class="site-pill">CNN</span>
+          <span class="site-pill">Al Jazeera</span>
+
+          <h6>Music</h6>
+          <span class="site-pill">SoundCloud</span>
+          <span class="site-pill">Bandcamp</span>
+          <span class="site-pill">Audiomack</span>
+
+          <h6>Other</h6>
+          <span class="site-pill">Streamable</span>
+          <span class="site-pill">Imgur</span>
+          <span class="site-pill">Google Drive</span>
+          <span class="site-pill">Archive.org</span>
+
+
+          <p class="text-center mt-3 mb-0" style="color:var(--text-muted)"><em>...and hundreds more</em></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section id="faq">
+    <div class="container">
+      <h2 class="section-title text-center">Frequently Asked Questions</h2>
+      <p class="text-center mb-5" style="color:var(--text-muted)">Everything you need to know.</p>
+
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="accordion" id="faqAccordion">
+
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">What is AnyGif Bot?</button>
+              </h2>
+              <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">AnyGif is a Telegram bot that converts any video URL into a GIF. Just paste a link, choose the moment you want, and get your GIF delivered right in the chat.</div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">How much does it cost?</button>
+              </h2>
+              <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">Each GIF costs 10 Telegram Stars. Stars are Telegram's built-in digital currency that you can purchase directly within the app.</div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">What if the generation fails?</button>
+              </h2>
+              <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">If your GIF fails to generate for any reason, your 10 Stars are automatically refunded. You'll never be charged for a GIF you didn't receive.</div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">What video sites are supported?</button>
+              </h2>
+              <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">AnyGif supports over 1,800 websites including YouTube, TikTok, Instagram, Twitter/X, Reddit, Vimeo, Twitch, adult sites, and many more. If it's a video on the internet, there's a good chance it works.</div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">What is the maximum GIF length?</button>
+              </h2>
+              <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">GIFs can be up to 10 seconds long. You choose the start time and duration when creating your GIF.</div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">How do I use the bot?</button>
+              </h2>
+              <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">Open <a href="https://t.me/anygif_bot" target="_blank" rel="noopener">@anygif_bot</a> in Telegram and send any video URL. The bot will guide you through selecting the start time and duration, then generate your GIF after payment.</div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq7">Is my data stored?</button>
+              </h2>
+              <div id="faq7" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">No. AnyGif is fully anonymous and collects zero data. No user IDs, chat IDs, video URLs, or generated GIFs are stored. Videos are processed in real-time and immediately discarded. Read our <a href="privacy.html">Privacy Policy</a> for full details.</div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq8">How do I get Telegram Stars?</button>
+              </h2>
+              <div id="faq8" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">You can purchase Telegram Stars directly within the Telegram app. Go to Settings &rarr; My Stars, or simply try to pay for a GIF and Telegram will prompt you to buy Stars if you don't have enough.</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer>
+    <div class="container">
+      <div class="row align-items-center text-center text-md-start">
+        <div class="col-md-4 mb-3 mb-md-0">
+          <span class="fw-bold" style="color:var(--neon)">AnyGif</span>
+          <span class="ms-2 small" style="color:var(--text-muted)">&copy; 2026</span>
+        </div>
+        <div class="col-md-4 mb-3 mb-md-0 text-md-center">
+          <a href="privacy.html" class="me-3">Privacy Policy</a>
+          <a href="https://x.com/alexandercranga" target="_blank" rel="noopener">@alexandercranga</a>
+        </div>
+        <div class="col-md-4 text-md-end">
+          <a class="btn btn-neon-outline btn-sm" href="https://t.me/anygif_bot" target="_blank" rel="noopener">Open in Telegram</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom JS -->
+  <script src="js/main.js"></script>
+</body>
+</html>
