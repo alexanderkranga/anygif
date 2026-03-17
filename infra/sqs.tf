@@ -4,7 +4,7 @@
 
 resource "aws_sqs_queue" "gif_worker_dlq" {
   name                      = "${local.name}-worker-dlq"
-  message_retention_seconds = 1209600 # 14 days — inspect failed payments
+  message_retention_seconds = 259200 # 3 days
 
   tags = { Name = "${local.name}-worker-dlq" }
 }

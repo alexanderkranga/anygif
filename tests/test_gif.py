@@ -46,7 +46,7 @@ class TestGenerateGif:
 
     @pytest.mark.asyncio
     async def test_nonzero_exit_raises(self):
-        """Non-zero exit code raises GifGenerationError with stderr detail."""
+        """Non-zero exit code raises GifGenerationError."""
         async def fake_create_subprocess_exec(*args, **kwargs):
             proc = AsyncMock()
             proc.communicate = AsyncMock(return_value=(b"", b"ERROR: bot check failed"))
@@ -54,7 +54,7 @@ class TestGenerateGif:
             return proc
 
         with patch("app.gif.asyncio.create_subprocess_exec", side_effect=fake_create_subprocess_exec):
-            with pytest.raises(GifGenerationError, match="bot check failed"):
+            with pytest.raises(GifGenerationError, match="failed"):
                 await generate_gif("https://example.com/video", "0:00", 5)
 
     @pytest.mark.asyncio
@@ -100,8 +100,8 @@ class TestGenerateGif:
                 await generate_gif("https://example.com/video", "0:00", 5)
 
     @pytest.mark.asyncio
-    async def test_bot_detection_error_surfaces_in_stderr(self):
-        """Bot detection errors from yt-dlp surface in the exception."""
+    async def test_bot_detection_error_raises(self):
+        """Bot detection errors from yt-dlp raise GifGenerationError without leaking stderr."""
         error_msg = "ERROR: [youtube] Sign in to confirm you're not a bot"
 
         async def fake_create_subprocess_exec(*args, **kwargs):
@@ -111,7 +111,7 @@ class TestGenerateGif:
             return proc
 
         with patch("app.gif.asyncio.create_subprocess_exec", side_effect=fake_create_subprocess_exec):
-            with pytest.raises(GifGenerationError, match="not a bot"):
+            with pytest.raises(GifGenerationError, match="failed"):
                 await generate_gif("https://youtube.com/watch?v=abc", "0:00", 5)
 
     @pytest.mark.asyncio

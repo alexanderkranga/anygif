@@ -24,20 +24,6 @@ resource "aws_iam_role_policy_attachment" "lambda_vpc" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
-resource "aws_iam_role_policy" "lambda_s3" {
-  name = "s3-gif-upload"
-  role = aws_iam_role.lambda.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect   = "Allow"
-      Action   = ["s3:PutObject"]
-      Resource = "${aws_s3_bucket.gif_output.arn}/*"
-    }]
-  })
-}
-
 resource "aws_iam_role_policy" "lambda_sqs" {
   name = "sqs-send"
   role = aws_iam_role.lambda.id
@@ -103,7 +89,7 @@ resource "aws_security_group" "lambda" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "Outbound for Telegram API, yt-dlp, Redis, S3"
+    description = "Outbound for Telegram API, yt-dlp, Redis"
   }
 
   tags = { Name = "${local.name}-lambda" }
@@ -115,13 +101,13 @@ resource "aws_security_group" "lambda" {
 
 resource "aws_cloudwatch_log_group" "webhook" {
   name              = "/aws/lambda/${local.name}-webhook"
-  retention_in_days = 30
+  retention_in_days = 3
   tags              = { Name = "${local.name}-webhook" }
 }
 
 resource "aws_cloudwatch_log_group" "worker" {
   name              = "/aws/lambda/${local.name}-worker"
-  retention_in_days = 30
+  retention_in_days = 3
   tags              = { Name = "${local.name}-worker" }
 }
 
@@ -151,7 +137,6 @@ resource "aws_lambda_function" "webhook" {
       TELEGRAM_BOT_TOKEN     = data.aws_secretsmanager_secret_version.bot_token.secret_string
       TELEGRAM_WEBHOOK_SECRET = data.aws_secretsmanager_secret_version.webhook_secret.secret_string
       REDIS_URL              = "redis://${aws_elasticache_cluster.redis.cache_nodes[0].address}:6379"
-      S3_BUCKET              = aws_s3_bucket.gif_output.id
       GENERATION_PRICE_STARS = tostring(var.generation_price_stars)
       SESSION_TTL_SECONDS    = tostring(var.session_ttl_seconds)
       SQS_QUEUE_URL          = aws_sqs_queue.gif_worker.url
@@ -189,7 +174,6 @@ resource "aws_lambda_function" "worker" {
       TELEGRAM_BOT_TOKEN     = data.aws_secretsmanager_secret_version.bot_token.secret_string
       TELEGRAM_WEBHOOK_SECRET = data.aws_secretsmanager_secret_version.webhook_secret.secret_string
       REDIS_URL              = "redis://${aws_elasticache_cluster.redis.cache_nodes[0].address}:6379"
-      S3_BUCKET              = aws_s3_bucket.gif_output.id
       GENERATION_PRICE_STARS = tostring(var.generation_price_stars)
       SESSION_TTL_SECONDS    = tostring(var.session_ttl_seconds)
     }

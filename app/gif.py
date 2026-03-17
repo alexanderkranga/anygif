@@ -33,25 +33,15 @@ async def generate_gif(video_url: str, start_time: str, duration: int) -> bytes:
             stderr=asyncio.subprocess.PIPE,
         )
         try:
-            stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=120)
+            await asyncio.wait_for(proc.communicate(), timeout=120)
         except asyncio.TimeoutError:
             proc.kill()
             await proc.communicate()
             raise GifGenerationError("GIF generation timed out (120s)")
 
-        stdout_str = stdout.decode(errors="replace").strip()
-        stderr_str = stderr.decode(errors="replace").strip()
-
-        # Always log stdout (contains debug info from anygif.sh)
-        if stdout_str:
-            logger.info("anygif stdout:\n%s", stdout_str)
-        if stderr_str:
-            logger.info("anygif stderr:\n%s", stderr_str)
-
         if proc.returncode != 0:
-            detail = stderr_str or stdout_str
-            logger.error("anygif failed (rc=%d): %s", proc.returncode, detail)
-            raise GifGenerationError(f"GIF generation failed: {detail}")
+            logger.error("anygif failed (rc=%d)", proc.returncode)
+            raise GifGenerationError("GIF generation failed")
 
         with open(output_path, "rb") as f:
             data = f.read()

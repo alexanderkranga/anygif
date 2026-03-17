@@ -8,10 +8,6 @@ output "ecr_repository_url" {
   description = "ECR repository URL — push images here"
 }
 
-output "s3_bucket_name" {
-  value       = aws_s3_bucket.gif_output.id
-  description = "S3 bucket for GIF output"
-}
 
 output "redis_endpoint" {
   value       = aws_elasticache_cluster.redis.cache_nodes[0].address

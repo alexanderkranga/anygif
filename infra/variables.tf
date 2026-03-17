@@ -71,9 +71,3 @@ variable "session_ttl_seconds" {
   default     = 600
   description = "Session TTL in seconds"
 }
-
-variable "s3_bucket_name" {
-  type        = string
-  default     = "anygif-output"
-  description = "S3 bucket name for GIF output"
-}

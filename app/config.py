@@ -21,7 +21,3 @@ def get_generation_price() -> int:
 
 def get_session_ttl() -> int:
     return int(os.getenv("SESSION_TTL_SECONDS", "600"))
-
-
-def get_s3_bucket() -> str:
-    return os.environ["S3_BUCKET"]

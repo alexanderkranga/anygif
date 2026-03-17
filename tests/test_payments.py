@@ -102,10 +102,8 @@ class TestSuccessfulPayment:
             ),
         )
 
-        with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen, \
-             patch("app.handlers.s3.upload_gif", new_callable=AsyncMock) as mock_s3:
+        with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen:
             mock_gen.return_value = b"fake-gif-bytes"
-            mock_s3.return_value = "gifs/sess-123.gif"
             await handle_successful_payment(msg)
 
         # Should send "Generating..." then delete it, then send document
@@ -145,10 +143,8 @@ class TestSuccessfulPayment:
             ),
         )
 
-        with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen, \
-             patch("app.handlers.s3.upload_gif", new_callable=AsyncMock) as mock_s3:
+        with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen:
             mock_gen.return_value = b"fake-gif-bytes"
-            mock_s3.return_value = "gifs/sess-123.gif"
             await handle_successful_payment(msg)
 
         # Only one delete: the "Generating..." message
@@ -173,17 +169,14 @@ class TestSuccessfulPayment:
         )
 
         # First call
-        with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen, \
-             patch("app.handlers.s3.upload_gif", new_callable=AsyncMock) as mock_s3:
+        with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen:
             mock_gen.return_value = b"fake-gif"
-            mock_s3.return_value = "gifs/sess-123.gif"
             await handle_successful_payment(msg)
 
         calls_after_first = len(telegram_calls)
 
         # Second call with same charge_id
-        with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen, \
-             patch("app.handlers.s3.upload_gif", new_callable=AsyncMock) as mock_s3:
+        with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen:
             await handle_successful_payment(msg)
             # generate_gif should NOT be called
             mock_gen.assert_not_called()
@@ -228,8 +221,7 @@ class TestSuccessfulPayment:
             ),
         )
 
-        with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen, \
-             patch("app.handlers.s3.upload_gif", new_callable=AsyncMock):
+        with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen:
             mock_gen.side_effect = Exception("ffmpeg crashed")
             await handle_successful_payment(msg)
 
@@ -259,10 +251,8 @@ class TestSuccessfulPayment:
             },
         )
 
-        with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen, \
-             patch("app.handlers.s3.upload_gif", new_callable=AsyncMock) as mock_s3:
+        with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen:
             mock_gen.return_value = b"gif-bytes"
-            mock_s3.return_value = "gifs/sess-123.gif"
             await dispatch_update(update)
 
         doc_calls = [(m, kw) for m, kw in telegram_calls if m == "sendAnimation"]
@@ -285,8 +275,7 @@ class TestSuccessfulPayment:
             ),
         )
 
-        with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen, \
-             patch("app.handlers.s3.upload_gif", new_callable=AsyncMock):
+        with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen:
             mock_gen.side_effect = RuntimeError("unexpected network error")
             await handle_successful_payment(msg)
 

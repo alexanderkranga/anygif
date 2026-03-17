@@ -8,7 +8,7 @@ import uuid
 import time
 from typing import Optional
 
-from app import config, redis as redis_mod, telegram as tg, gif, s3
+from app import config, redis as redis_mod, telegram as tg, gif
 from app.models import Update, Message, PreCheckoutQuery, Session
 
 logger = logging.getLogger(__name__)
@@ -219,10 +219,6 @@ async def handle_successful_payment(msg: Message) -> None:
             session.video_url, session.start_time, session.duration
         )
 
-        # Upload to S3
-        s3_key = f"gifs/{session.session_id}.mp4"
-        await s3.upload_gif(gif_bytes, s3_key)
-
         # Delete "Generating..." message
         if processing_message_id:
             await tg.delete_message(session.chat_id, processing_message_id)
@@ -236,7 +232,7 @@ async def handle_successful_payment(msg: Message) -> None:
         )
 
     except Exception as e:
-        logger.error("GIF generation failed: %s", e)
+        logger.error("GIF generation failed for session %s: %s", session_id, type(e).__name__)
         if processing_message_id:
             await tg.delete_message(session.chat_id, processing_message_id)
         await tg.refund_star_payment(user_id, charge_id)

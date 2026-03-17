@@ -38,7 +38,7 @@ async def _call(method: str, **kwargs: Any) -> dict:
     resp = await client.post(_url(method), **kwargs)
     data = resp.json()
     if not data.get("ok"):
-        logger.error("Telegram API error on %s: %s", method, data)
+        logger.error("Telegram API error on %s: error_code=%s", method, data.get("error_code"))
     return data
 
 
