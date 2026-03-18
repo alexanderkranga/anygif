@@ -42,7 +42,7 @@ resource "aws_elasticache_subnet_group" "main" {
 
 resource "aws_elasticache_replication_group" "redis" {
   replication_group_id = "anygif"
-  description          = "AnyGif Redis — sessions and dedup"
+  description          = "AnyGif Redis - sessions and dedup"
   engine               = "redis"
   engine_version       = "7.1"
   node_type            = var.redis_node_type
