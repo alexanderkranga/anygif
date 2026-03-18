@@ -4,7 +4,7 @@
 
 resource "aws_sqs_queue" "gif_worker_dlq" {
   name                      = "${local.name}-worker-dlq"
-  message_retention_seconds = 259200 # 3 days
+  message_retention_seconds = 3600 # 1 hour — session TTL is 10 min; long retention serves no purpose
   sqs_managed_sse_enabled   = true
 
   tags = { Name = "${local.name}-worker-dlq" }

@@ -8,7 +8,6 @@ import httpx
 import redis.asyncio as aioredis
 
 from app import config, handlers, redis as redis_mod, telegram as tg
-from app.models import Update
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -32,5 +31,4 @@ def handler(event, context):
 
     for record in event["Records"]:
         body = json.loads(record["body"])
-        update = Update.model_validate(body)
-        asyncio.run(handlers.handle_successful_payment(update.message))
+        asyncio.run(handlers.handle_successful_payment(body["charge_id"], body["session_id"]))

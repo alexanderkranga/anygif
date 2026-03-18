@@ -11,7 +11,6 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class TelegramUser(BaseModel):
     id: int
-    first_name: Optional[str] = None
 
 
 class Document(BaseModel):

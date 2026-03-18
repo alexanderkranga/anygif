@@ -28,7 +28,10 @@ async def dispatch_update(update: Update) -> None:
 
         # Successful payment
         if msg.successful_payment is not None:
-            await handle_successful_payment(msg)
+            await handle_successful_payment(
+                msg.successful_payment.telegram_payment_charge_id,
+                msg.successful_payment.invoice_payload,
+            )
             return
 
         text = msg.text or ""
@@ -148,7 +151,7 @@ async def handle_gif_command(msg: Message) -> None:
     invoice_resp = await tg.send_invoice(
         chat_id=msg.chat.id,
         title="GIF Generation",
-        description=f"{video_url[:40]} @ {start_time} ({duration}s)",
+        description=f"GIF @ {start_time} ({duration}s)",
         payload=session_id,
         currency="XTR",
         prices=[{"label": "1 GIF", "amount": price}],
@@ -173,30 +176,21 @@ async def handle_pre_checkout(query: PreCheckoutQuery) -> None:
     await tg.answer_pre_checkout_query(query.id, ok=True)
 
 
-async def handle_successful_payment(msg: Message) -> None:
+async def handle_successful_payment(charge_id: str, session_id: str) -> None:
     """Process confirmed payment — generate GIF or refund."""
-    payment = msg.successful_payment
-    if payment is None:
-        return
-
-    charge_id = payment.telegram_payment_charge_id
-    user_id = msg.from_.id if msg.from_ else 0
-
     # Dedup check
     is_new = await redis_mod.check_and_set_dedup(charge_id)
     if not is_new:
         return  # duplicate webhook
 
-    session_id = payment.invoice_payload
     session = await redis_mod.get_session(session_id)
 
     if session is None:
+        user_id = await redis_mod.get_and_delete_refund_fallback(session_id)
+        if user_id is None:
+            logger.error("Missing session and refund fallback for session %s", session_id)
+            return
         await tg.refund_star_payment(user_id, charge_id)
-        await tg.send_message(
-            msg.chat.id,
-            "Something went wrong. Your Stars have been refunded.",
-            reply_to_message_id=msg.message_id,
-        )
         return
 
     # Delete the invoice message so the user cannot pay again accidentally
@@ -235,7 +229,7 @@ async def handle_successful_payment(msg: Message) -> None:
         logger.error("GIF generation failed for session %s: %s", session_id, type(e).__name__)
         if processing_message_id:
             await tg.delete_message(session.chat_id, processing_message_id)
-        await tg.refund_star_payment(user_id, charge_id)
+        await tg.refund_star_payment(session.user_id, charge_id)
         await tg.send_message(
             session.chat_id,
             "GIF generation failed. Your Stars have been refunded. Please, try again later.",

@@ -7,8 +7,7 @@ from unittest.mock import patch, AsyncMock
 from app import redis as redis_mod
 from app.handlers import handle_pre_checkout, handle_successful_payment, dispatch_update
 from app.models import (
-    Update, Message, Chat, TelegramUser, PreCheckoutQuery,
-    SuccessfulPayment, Session,
+    Update, TelegramUser, PreCheckoutQuery, Session,
 )
 
 
@@ -90,21 +89,9 @@ class TestSuccessfulPayment:
         session = _make_session(invoice_message_id=9998)
         await redis_mod.save_session(session)
 
-        msg = Message(
-            message_id=20,
-            chat=Chat(id=100),
-            from_=TelegramUser(id=1),
-            successful_payment=SuccessfulPayment(
-                currency="XTR",
-                total_amount=1,
-                invoice_payload="sess-123",
-                telegram_payment_charge_id="charge-1",
-            ),
-        )
-
         with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen:
             mock_gen.return_value = b"fake-gif-bytes"
-            await handle_successful_payment(msg)
+            await handle_successful_payment("charge-1", "sess-123")
 
         # Should send "Generating..." then delete it, then send document
         send_calls = [(m, kw) for m, kw in telegram_calls if m == "sendMessage"]
@@ -131,21 +118,9 @@ class TestSuccessfulPayment:
         session = _make_session(invoice_message_id=None)
         await redis_mod.save_session(session)
 
-        msg = Message(
-            message_id=20,
-            chat=Chat(id=100),
-            from_=TelegramUser(id=1),
-            successful_payment=SuccessfulPayment(
-                currency="XTR",
-                total_amount=1,
-                invoice_payload="sess-123",
-                telegram_payment_charge_id="charge-noinvoiceid",
-            ),
-        )
-
         with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen:
             mock_gen.return_value = b"fake-gif-bytes"
-            await handle_successful_payment(msg)
+            await handle_successful_payment("charge-noinvoiceid", "sess-123")
 
         # Only one delete: the "Generating..." message
         delete_calls = [(m, kw) for m, kw in telegram_calls if m == "deleteMessage"]
@@ -156,74 +131,37 @@ class TestSuccessfulPayment:
         session = _make_session()
         await redis_mod.save_session(session)
 
-        msg = Message(
-            message_id=20,
-            chat=Chat(id=100),
-            from_=TelegramUser(id=1),
-            successful_payment=SuccessfulPayment(
-                currency="XTR",
-                total_amount=1,
-                invoice_payload="sess-123",
-                telegram_payment_charge_id="charge-dup",
-            ),
-        )
-
         # First call
         with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen:
             mock_gen.return_value = b"fake-gif"
-            await handle_successful_payment(msg)
+            await handle_successful_payment("charge-dup", "sess-123")
 
         calls_after_first = len(telegram_calls)
 
         # Second call with same charge_id
         with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen:
-            await handle_successful_payment(msg)
+            await handle_successful_payment("charge-dup", "sess-123")
             # generate_gif should NOT be called
             mock_gen.assert_not_called()
 
     @pytest.mark.asyncio
     async def test_missing_session_at_payment_triggers_refund(self, fake_redis, telegram_calls):
-        msg = Message(
-            message_id=20,
-            chat=Chat(id=100),
-            from_=TelegramUser(id=1),
-            successful_payment=SuccessfulPayment(
-                currency="XTR",
-                total_amount=1,
-                invoice_payload="sess-gone",
-                telegram_payment_charge_id="charge-nosess",
-            ),
-        )
+        await redis_mod.save_refund_fallback("sess-gone", 1)
 
-        await handle_successful_payment(msg)
+        await handle_successful_payment("charge-nosess", "sess-gone")
 
         refund_calls = [(m, kw) for m, kw in telegram_calls if m == "refundStarPayment"]
         assert len(refund_calls) == 1
         assert refund_calls[0][1]["json"]["telegram_payment_charge_id"] == "charge-nosess"
-
-        send_calls = [(m, kw) for m, kw in telegram_calls if m == "sendMessage"]
-        assert any("refunded" in kw["json"]["text"].lower() for _, kw in send_calls)
 
     @pytest.mark.asyncio
     async def test_generation_error_refunds(self, fake_redis, telegram_calls):
         session = _make_session()
         await redis_mod.save_session(session)
 
-        msg = Message(
-            message_id=20,
-            chat=Chat(id=100),
-            from_=TelegramUser(id=1),
-            successful_payment=SuccessfulPayment(
-                currency="XTR",
-                total_amount=1,
-                invoice_payload="sess-123",
-                telegram_payment_charge_id="charge-fail",
-            ),
-        )
-
         with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen:
             mock_gen.side_effect = Exception("ffmpeg crashed")
-            await handle_successful_payment(msg)
+            await handle_successful_payment("charge-fail", "sess-123")
 
         refund_calls = [(m, kw) for m, kw in telegram_calls if m == "refundStarPayment"]
         assert len(refund_calls) == 1
@@ -263,21 +201,9 @@ class TestSuccessfulPayment:
         session = _make_session()
         await redis_mod.save_session(session)
 
-        msg = Message(
-            message_id=20,
-            chat=Chat(id=100),
-            from_=TelegramUser(id=1),
-            successful_payment=SuccessfulPayment(
-                currency="XTR",
-                total_amount=1,
-                invoice_payload="sess-123",
-                telegram_payment_charge_id="charge-unexpected",
-            ),
-        )
-
         with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen:
             mock_gen.side_effect = RuntimeError("unexpected network error")
-            await handle_successful_payment(msg)
+            await handle_successful_payment("charge-unexpected", "sess-123")
 
         refund_calls = [(m, kw) for m, kw in telegram_calls if m == "refundStarPayment"]
         assert len(refund_calls) == 1

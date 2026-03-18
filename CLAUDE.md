@@ -7,9 +7,10 @@ Telegram bot that converts video URLs to short MP4 clips (not GIFs — Telegram 
 User privacy and anonymity are core design principles. No user-identifiable information is persisted or logged:
 
 - **No PII in logs** — application logs contain only technical data (return codes, file sizes, durations). Subprocess output is sanitized to strip URLs before logging. CloudWatch logs auto-delete after 3 days.
-- **Ephemeral session data only** — Redis stores session context (user_id, chat_id, video_url) for the payment-to-delivery handoff between Lambdas, with a 10-minute TTL. No long-term user data storage exists anywhere.
+- **No PII in SQS** — messages contain only `charge_id` (Telegram-generated) and `session_id` (internal UUID). No user_id, chat_id, or URLs.
+- **Ephemeral session data only** — Redis stores session context (user_id, chat_id, video_url) for the payment-to-delivery handoff between Lambdas, with a 10-minute TTL. An additional `refund:{session_id}` key (1-hour TTL, deleted on use) holds only `user_id` as a refund fallback. No long-term user data storage exists anywhere.
 - **Encryption at rest and in transit** — Redis (ElastiCache) uses at-rest and transit encryption (TLS). SQS queues use server-side encryption. Session data is never readable outside the Lambda runtime.
-- **No usernames or names stored** — Telegram user fields beyond numeric IDs are never extracted or persisted.
+- **No names stored or parsed** — `TelegramUser` model only holds the numeric `id`. `first_name` and all other name fields are discarded at deserialization.
 - **No external analytics or tracking** — no third-party services receive user data.
 
 ## Architecture

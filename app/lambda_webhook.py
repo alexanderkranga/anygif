@@ -48,8 +48,16 @@ def handler(event, context):
         update.message is not None
         and update.message.successful_payment is not None
     ):
+        payment = update.message.successful_payment
+        charge_id = payment.telegram_payment_charge_id
+        session_id = payment.invoice_payload
+
+        user_id = update.message.from_.id if update.message.from_ else 0
+        asyncio.run(redis_mod.save_refund_fallback(session_id, user_id))
+
+        minimal_payload = json.dumps({"charge_id": charge_id, "session_id": session_id})
         queue_url = os.environ["SQS_QUEUE_URL"]
-        _sqs.send_message(QueueUrl=queue_url, MessageBody=event["body"])
+        _sqs.send_message(QueueUrl=queue_url, MessageBody=minimal_payload)
         return {"statusCode": 200, "body": '{"ok": true}'}
 
     # Fast-path: commands, pre_checkout, everything else

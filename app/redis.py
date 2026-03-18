@@ -51,3 +51,18 @@ async def check_and_set_dedup(charge_id: str) -> bool:
     r = get_redis()
     was_set = await r.set(f"dedup:{charge_id}", "1", nx=True, ex=86400)
     return was_set is not None  # True if key was newly set
+
+
+# ── Refund fallback ─────────────────────────────────────────────────
+_REFUND_FALLBACK_TTL = 3600  # 1 hour
+
+async def save_refund_fallback(session_id: str, user_id: int) -> None:
+    r = get_redis()
+    await r.set(f"refund:{session_id}", str(user_id), ex=_REFUND_FALLBACK_TTL)
+
+async def get_and_delete_refund_fallback(session_id: str) -> Optional[int]:
+    r = get_redis()
+    raw = await r.getdel(f"refund:{session_id}")
+    if raw is None:
+        return None
+    return int(raw)

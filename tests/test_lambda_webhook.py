@@ -90,6 +90,7 @@ class TestWebhookRouting:
                 "message_id": 10,
                 "date": 1700000000,
                 "chat": {"id": 42, "type": "private"},
+                "from": {"id": 42},
                 "successful_payment": {
                     "currency": "XTR",
                     "total_amount": 10,
@@ -106,8 +107,12 @@ class TestWebhookRouting:
         _mock_sqs.send_message.assert_called_once()
         call_kwargs = _mock_sqs.send_message.call_args[1]
         assert call_kwargs["QueueUrl"] == "https://sqs.test/queue"
-        # Verify body is the raw JSON (not re-serialized)
-        assert "successful_payment" in call_kwargs["MessageBody"]
+        # Verify minimal payload — no PII
+        enqueued = json.loads(call_kwargs["MessageBody"])
+        assert enqueued["charge_id"] == "charge-1"
+        assert enqueued["session_id"] == "session-123"
+        assert "user_id" not in enqueued
+        assert "chat_id" not in enqueued
         # Should NOT have dispatched to handlers
         assert len(telegram_calls) == 0
 

@@ -94,11 +94,9 @@ if [ -n "$PROXY" ]; then
 fi
 
 echo "Downloading and extracting clip..."
-echo "  URL:      $URL"
 echo "  Range:    $START -> $END (${DURATION}s)"
 echo "  Size:     $SIZE_LABEL"
 echo "  FPS:      $FPS"
-echo "  Proxy:    ${PROXY:-none}"
 echo "  Output:   $OUTPUT"
 
 # When proxied, video URLs are often IP-signed to the proxy's IP,
