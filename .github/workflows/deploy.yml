@@ -31,9 +31,9 @@ jobs:
       - name: Build and push Docker image to ECR
         id: docker
         run: |
-          ECR_REPO_URL=$(cd infra && terraform output -raw ecr_repository_url)
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           ECR_REGISTRY="$ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com"
+          ECR_REPO_URL="$ECR_REGISTRY/anygif"
           IMAGE_TAG="${{ github.sha }}"
 
           aws ecr get-login-password --region eu-central-1 | \
