@@ -141,7 +141,7 @@ resource "aws_lambda_function" "webhook" {
     variables = {
       TELEGRAM_BOT_TOKEN     = data.aws_secretsmanager_secret_version.bot_token.secret_string
       TELEGRAM_WEBHOOK_SECRET = data.aws_secretsmanager_secret_version.webhook_secret.secret_string
-      REDIS_URL              = "redis://${aws_elasticache_cluster.redis.cache_nodes[0].address}:6379"
+      REDIS_URL              = "rediss://${aws_elasticache_replication_group.redis.primary_endpoint_address}:6379"
       GENERATION_PRICE_STARS = tostring(var.generation_price_stars)
       SESSION_TTL_SECONDS    = tostring(var.session_ttl_seconds)
       SQS_QUEUE_URL          = aws_sqs_queue.gif_worker.url
@@ -178,7 +178,7 @@ resource "aws_lambda_function" "worker" {
     variables = {
       TELEGRAM_BOT_TOKEN     = data.aws_secretsmanager_secret_version.bot_token.secret_string
       TELEGRAM_WEBHOOK_SECRET = data.aws_secretsmanager_secret_version.webhook_secret.secret_string
-      REDIS_URL              = "redis://${aws_elasticache_cluster.redis.cache_nodes[0].address}:6379"
+      REDIS_URL              = "rediss://${aws_elasticache_replication_group.redis.primary_endpoint_address}:6379"
       GENERATION_PRICE_STARS = tostring(var.generation_price_stars)
       SESSION_TTL_SECONDS    = tostring(var.session_ttl_seconds)
       DECODO_PROXY_URL       = data.aws_secretsmanager_secret_version.decodo_proxy_url.secret_string

@@ -40,16 +40,22 @@ resource "aws_elasticache_subnet_group" "main" {
 # ElastiCache Redis (single node, no cluster mode)
 # ---------------------------------------------------------------------------
 
-resource "aws_elasticache_cluster" "redis" {
-  cluster_id           = "anygif"
+resource "aws_elasticache_replication_group" "redis" {
+  replication_group_id = "anygif"
+  description          = "AnyGif Redis — sessions and dedup"
   engine               = "redis"
   engine_version       = "7.1"
   node_type            = var.redis_node_type
-  num_cache_nodes      = 1
+  num_cache_clusters   = 1
   parameter_group_name = "default.redis7"
   port                 = 6379
   subnet_group_name    = aws_elasticache_subnet_group.main.name
   security_group_ids   = [aws_security_group.redis.id]
+
+  at_rest_encryption_enabled = true
+  transit_encryption_enabled = true
+
+  automatic_failover_enabled = false
 
   tags = { Name = "anygif-redis" }
 }
