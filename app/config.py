@@ -15,6 +15,10 @@ def get_redis_url() -> str:
     return os.getenv("REDIS_URL", "redis://localhost:6379")
 
 
+def get_free_mode() -> bool:
+    return os.getenv("FREE_MODE", "false").lower() == "true"
+
+
 def get_generation_price() -> int:
     return int(os.getenv("GENERATION_PRICE_STARS", "10"))
 

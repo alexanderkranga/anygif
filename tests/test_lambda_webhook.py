@@ -19,9 +19,12 @@ def _reset_init():
 @pytest.fixture
 def _mock_sqs():
     mock = MagicMock()
-    import app.lambda_webhook as mod
-    mod._sqs = mock
-    return mock
+    import app.queue as queue_mod
+    queue_mod._sqs = mock
+    queue_mod._queue_url = "https://sqs.test/queue"
+    yield mock
+    queue_mod._sqs = None
+    queue_mod._queue_url = None
 
 
 def _make_event(body, secret=None):
@@ -100,8 +103,7 @@ class TestWebhookRouting:
                 },
             },
         }
-        with patch.dict("os.environ", {"SQS_QUEUE_URL": "https://sqs.test/queue"}):
-            result = handler(_make_event(body, secret="test-secret"), None)
+        result = handler(_make_event(body, secret="test-secret"), None)
 
         assert result["statusCode"] == 200
         _mock_sqs.send_message.assert_called_once()

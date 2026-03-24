@@ -66,6 +66,12 @@ variable "decodo_proxy_url_arn" {
   description = "Secrets Manager ARN for DECODO_PROXY_URL (residential proxy)"
 }
 
+variable "free_mode" {
+  type        = bool
+  default     = true
+  description = "When true, skip payments and let users generate GIFs for free"
+}
+
 variable "generation_price_stars" {
   type        = number
   default     = 10

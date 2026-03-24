@@ -64,7 +64,7 @@ TikTok always uses strategy 2. Fallback is automatic on ffmpeg failure.
 
 Required: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET`, `DECODO_PROXY_URL` (worker only), `SQS_QUEUE_URL` (webhook only). All injected by Terraform from Secrets Manager.
 
-Optional with defaults: `REDIS_URL` (localhost:6379), `GENERATION_PRICE_STARS` (10), `SESSION_TTL_SECONDS` (120).
+Optional with defaults: `REDIS_URL` (localhost:6379), `GENERATION_PRICE_STARS` (10), `SESSION_TTL_SECONDS` (120), `FREE_MODE` (false — when true, skips payment flow entirely and lets users generate GIFs for free).
 
 ## Testing
 

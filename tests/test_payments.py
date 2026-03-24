@@ -210,3 +210,60 @@ class TestSuccessfulPayment:
 
         # Session cleaned up
         assert await redis_mod.get_session("sess-123") is None
+
+
+class TestFreeMode:
+    @pytest.mark.asyncio
+    async def test_generation_failure_free_mode_no_refund(self, fake_redis, telegram_calls, monkeypatch):
+        monkeypatch.setenv("FREE_MODE", "true")
+        session = _make_session()
+        await redis_mod.save_session(session)
+
+        with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen:
+            mock_gen.side_effect = Exception("ffmpeg crashed")
+            await handle_successful_payment("free-sess-123", "sess-123")
+
+        refund_calls = [(m, kw) for m, kw in telegram_calls if m == "refundStarPayment"]
+        assert len(refund_calls) == 0
+
+    @pytest.mark.asyncio
+    async def test_generation_failure_free_mode_error_message(self, fake_redis, telegram_calls, monkeypatch):
+        monkeypatch.setenv("FREE_MODE", "true")
+        session = _make_session()
+        await redis_mod.save_session(session)
+
+        with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen:
+            mock_gen.side_effect = Exception("ffmpeg crashed")
+            await handle_successful_payment("free-sess-123", "sess-123")
+
+        send_calls = [(m, kw) for m, kw in telegram_calls if m == "sendMessage"]
+        error_msgs = [kw["json"]["text"] for _, kw in send_calls if "failed" in kw["json"]["text"].lower()]
+        assert len(error_msgs) == 1
+        assert "try again" in error_msgs[0].lower()
+        assert "refund" not in error_msgs[0].lower()
+
+    @pytest.mark.asyncio
+    async def test_missing_session_free_mode_no_refund(self, fake_redis, telegram_calls, monkeypatch):
+        monkeypatch.setenv("FREE_MODE", "true")
+        # No session saved, no refund fallback
+        await handle_successful_payment("free-sess-gone", "sess-gone")
+
+        refund_calls = [(m, kw) for m, kw in telegram_calls if m == "refundStarPayment"]
+        assert len(refund_calls) == 0
+
+    @pytest.mark.asyncio
+    async def test_successful_generation_free_mode(self, fake_redis, telegram_calls, monkeypatch):
+        monkeypatch.setenv("FREE_MODE", "true")
+        session = _make_session()
+        await redis_mod.save_session(session)
+
+        with patch("app.handlers.gif.generate_gif", new_callable=AsyncMock) as mock_gen:
+            mock_gen.return_value = b"fake-gif-bytes"
+            await handle_successful_payment("free-sess-123", "sess-123")
+
+        doc_calls = [(m, kw) for m, kw in telegram_calls if m == "sendAnimation"]
+        assert len(doc_calls) == 1
+
+        # No refund
+        refund_calls = [(m, kw) for m, kw in telegram_calls if m == "refundStarPayment"]
+        assert len(refund_calls) == 0
