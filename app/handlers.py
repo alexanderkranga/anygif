@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import re
 import uuid
 import time
 from typing import Optional
 
-from app import config, redis as redis_mod, telegram as tg, gif
+from app import config, redis as redis_mod, telegram as tg, gif, stats
 from app.models import Update, Message, PreCheckoutQuery, Session
 
 logger = logging.getLogger(__name__)
@@ -224,6 +225,10 @@ async def handle_successful_payment(charge_id: str, session_id: str) -> None:
             filename="anygif.mp4",
             reply_to_message_id=session.original_message_id,
         )
+        try:
+            await asyncio.to_thread(stats.increment_gif_count)
+        except Exception:
+            logger.warning("Failed to increment GIF count", exc_info=True)
 
     except Exception as e:
         logger.error("GIF generation failed for session %s: %s", session_id, type(e).__name__)

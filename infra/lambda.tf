@@ -145,6 +145,7 @@ resource "aws_lambda_function" "webhook" {
       GENERATION_PRICE_STARS = tostring(var.generation_price_stars)
       SESSION_TTL_SECONDS    = tostring(var.session_ttl_seconds)
       SQS_QUEUE_URL          = aws_sqs_queue.gif_worker.url
+      S3_STATS_BUCKET        = aws_s3_bucket.stats.bucket
     }
   }
 
@@ -182,6 +183,7 @@ resource "aws_lambda_function" "worker" {
       GENERATION_PRICE_STARS = tostring(var.generation_price_stars)
       SESSION_TTL_SECONDS    = tostring(var.session_ttl_seconds)
       DECODO_PROXY_URL       = data.aws_secretsmanager_secret_version.decodo_proxy_url.secret_string
+      S3_STATS_BUCKET        = aws_s3_bucket.stats.bucket
     }
   }
 

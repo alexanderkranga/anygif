@@ -9,7 +9,7 @@ import boto3
 import httpx
 import redis.asyncio as aioredis
 
-from app import config, handlers, redis as redis_mod, telegram as tg
+from app import config, handlers, redis as redis_mod, stats, telegram as tg
 from app.models import Update
 
 logging.basicConfig(level=logging.INFO)
@@ -33,6 +33,20 @@ def _ensure_init():
 
 def handler(event, context):
     _ensure_init()
+
+    ctx_http = event.get("requestContext", {}).get("http", {})
+    if ctx_http.get("method") == "GET" and ctx_http.get("path") == "/stats":
+        count = stats.get_gif_count()
+        return {
+            "statusCode": 200,
+            "headers": {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "https://anygifbot.com",
+                "Cache-Control": "public, max-age=60",
+                "X-Content-Type-Options": "nosniff",
+            },
+            "body": json.dumps({"count": count}),
+        }
 
     headers = event.get("headers") or {}
     secret = headers.get("x-telegram-bot-api-secret-token")
