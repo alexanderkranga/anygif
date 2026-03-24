@@ -138,6 +138,11 @@ a:hover { color: var(--neon); opacity: .8; }
   50% { box-shadow: 0 0 24px var(--neon-glow), 0 0 72px rgba(255, 0, 0, .3); }
 }
 
+@keyframes pulse-glow-text {
+  0%, 100% { text-shadow: 0 0 7px var(--neon-glow), 0 0 20px var(--neon-glow); }
+  50% { text-shadow: 0 0 14px var(--neon-glow), 0 0 40px var(--neon-glow), 0 0 80px rgba(255, 0, 0, .4); }
+}
+
 .badge-anon {
   display: inline-block;
   font-size: .9rem;

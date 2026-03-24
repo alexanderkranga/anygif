@@ -31,12 +31,13 @@ navLinks.forEach(link => {
 // GIF count display — replace STATS_ENDPOINT with: terraform output api_endpoint + "/stats"
 const STATS_ENDPOINT = 'https://sn3k1fhq5e.execute-api.eu-central-1.amazonaws.com/stats';
 const gifCountEl = document.getElementById('gif-count');
-if (gifCountEl) {
+const gifCountNumber = document.getElementById('gif-count-number');
+if (gifCountEl && gifCountNumber) {
   fetch(STATS_ENDPOINT)
     .then(r => r.ok ? r.json() : null)
     .then(data => {
       if (data && data.count > 0) {
-        gifCountEl.textContent = data.count.toLocaleString() + ' GIFs created';
+        gifCountNumber.textContent = data.count.toLocaleString();
         gifCountEl.style.opacity = '1';
       }
     })
