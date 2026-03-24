@@ -9,25 +9,25 @@ import boto3
 import httpx
 import redis.asyncio as aioredis
 
-from app import config, handlers, redis as redis_mod, stats, telegram as tg
+from app import config, handlers, queue, redis as redis_mod, stats, telegram as tg
 from app.models import Update
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 _initialised = False
-_sqs = None
 
 
 def _ensure_init():
-    global _initialised, _sqs
+    global _initialised
     if _initialised:
         return
     r = aioredis.from_url(config.get_redis_url(), decode_responses=False)
     redis_mod.set_redis(r)
     http_client = httpx.AsyncClient(timeout=60)
     tg.set_client(http_client)
-    _sqs = boto3.client("sqs")
+    sqs = boto3.client("sqs")
+    queue.init(sqs, os.environ["SQS_QUEUE_URL"])
     _initialised = True
 
 
@@ -69,9 +69,7 @@ def handler(event, context):
         user_id = update.message.from_.id if update.message.from_ else 0
         asyncio.run(redis_mod.save_refund_fallback(session_id, user_id))
 
-        minimal_payload = json.dumps({"charge_id": charge_id, "session_id": session_id})
-        queue_url = os.environ["SQS_QUEUE_URL"]
-        _sqs.send_message(QueueUrl=queue_url, MessageBody=minimal_payload)
+        queue.enqueue_generation(charge_id, session_id)
         return {"statusCode": 200, "body": '{"ok": true}'}
 
     # Fast-path: commands, pre_checkout, everything else

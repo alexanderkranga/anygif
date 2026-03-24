@@ -1,7 +1,7 @@
 """Tests for command handlers — /gif validation, /start, /help."""
 
 import pytest
-from unittest.mock import patch, AsyncMock
+from unittest.mock import patch, AsyncMock, MagicMock
 
 from app.handlers import dispatch_update
 from app.models import Update
@@ -129,3 +129,67 @@ class TestStartHelp:
         send_calls = [(m, kw) for m, kw in telegram_calls if m == "sendMessage"]
         assert len(send_calls) == 1
         assert "Usage" in send_calls[0][1]["json"]["text"]
+
+
+class TestFreeMode:
+    @pytest.mark.asyncio
+    async def test_start_command_free_mode_shows_free_text(self, fake_redis, telegram_calls, monkeypatch):
+        monkeypatch.setenv("FREE_MODE", "true")
+        update = Update(
+            update_id=1,
+            message={"message_id": 1, "chat": {"id": 100}, "from": {"id": 1}, "text": "/start"},
+        )
+        await dispatch_update(update)
+
+        send_calls = [(m, kw) for m, kw in telegram_calls if m == "sendMessage"]
+        assert len(send_calls) == 1
+        assert "FREE" in send_calls[0][1]["json"]["text"]
+        assert send_calls[0][1]["json"].get("parse_mode") == "HTML"
+
+    @pytest.mark.asyncio
+    async def test_help_command_free_mode(self, fake_redis, telegram_calls, monkeypatch):
+        monkeypatch.setenv("FREE_MODE", "true")
+        update = Update(
+            update_id=1,
+            message={"message_id": 1, "chat": {"id": 100}, "from": {"id": 1}, "text": "/help"},
+        )
+        await dispatch_update(update)
+
+        send_calls = [(m, kw) for m, kw in telegram_calls if m == "sendMessage"]
+        assert len(send_calls) == 1
+        assert "free" in send_calls[0][1]["json"]["text"].lower()
+
+    @pytest.mark.asyncio
+    async def test_gif_command_free_mode_enqueues_directly(self, fake_redis, telegram_calls, monkeypatch):
+        monkeypatch.setenv("FREE_MODE", "true")
+        mock_enqueue = MagicMock()
+        monkeypatch.setattr("app.handlers.queue.enqueue_generation", mock_enqueue)
+
+        update = Update(
+            update_id=1,
+            message={"message_id": 1, "chat": {"id": 100}, "from": {"id": 1},
+                      "text": "/gif https://youtube.com/watch?v=abc 1:30 5"},
+        )
+        await dispatch_update(update)
+
+        # No invoice should be sent
+        invoice_calls = [(m, kw) for m, kw in telegram_calls if m == "sendInvoice"]
+        assert len(invoice_calls) == 0
+
+        # Should enqueue directly
+        assert mock_enqueue.call_count == 1
+        args = mock_enqueue.call_args[0]
+        assert args[0].startswith("free-")  # synthetic charge_id
+
+    @pytest.mark.asyncio
+    async def test_gif_command_paid_mode_sends_invoice(self, fake_redis, telegram_calls, monkeypatch):
+        monkeypatch.setenv("FREE_MODE", "false")
+        update = Update(
+            update_id=1,
+            message={"message_id": 1, "chat": {"id": 100}, "from": {"id": 1},
+                      "text": "/gif https://youtube.com/watch?v=abc 1:30 5"},
+        )
+        await dispatch_update(update)
+
+        invoice_calls = [(m, kw) for m, kw in telegram_calls if m == "sendInvoice"]
+        assert len(invoice_calls) == 1

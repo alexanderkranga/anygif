@@ -1,8 +1,8 @@
 # AnyGif Bot
 
-> AnyGif is an open source, private and secure Telegram bot. It converts any video URL into a GIF, supports 1,700+ websites, costs 10 Telegram Stars per GIF, and is built so that not even we can see what you're doing. Every privacy claim is backed by public source code.
+> AnyGif is a free, open source, private and secure Telegram bot. It converts any video URL into a GIF, supports 1,700+ websites, and is currently free to celebrate our launch (normally 10 Telegram Stars per GIF). Built so that not even we can see what you're doing. Every privacy claim is backed by public source code.
 
-AnyGif lets users paste any video link, choose a start time and duration (up to 10 seconds), and receive a GIF instantly. If generation fails, Stars are automatically refunded. We never know who you are, we never see what you send, and nothing is stored after your GIF is delivered.
+AnyGif lets users paste any video link, choose a start time and duration (up to 10 seconds), and receive a GIF instantly — completely free, no payment required. We never know who you are, we never see what you send, and nothing is stored after your GIF is delivered.
 
 ## Pages
 

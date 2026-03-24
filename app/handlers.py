@@ -9,7 +9,7 @@ import uuid
 import time
 from typing import Optional
 
-from app import config, redis as redis_mod, telegram as tg, gif, stats
+from app import config, queue, redis as redis_mod, telegram as tg, gif, stats
 from app.models import Update, Message, PreCheckoutQuery, Session
 
 logger = logging.getLogger(__name__)
@@ -52,24 +52,41 @@ async def dispatch_update(update: Update) -> None:
 
 
 async def handle_start(msg: Message) -> None:
+    free = config.get_free_mode()
     price = config.get_generation_price()
-    text = (
-        f"Welcome to AnyGif!\n\n"
-        f"I create GIFs from any video on the internet! "
-        f"Just give me a URL, a start time, and a duration (max 10 seconds).\n\n"
-        f"Works with YouTube, Vimeo, Twitter, TikTok, Reddit, Instagram, "
-        f"and 1000+ other sites.\n\n"
-        f"Price: {price} Stars per generation.\n\n"
-        f"How to use:\n"
-        f"  /gif <URL> <start_time> <duration_seconds>\n\n"
-        f"Example:\n"
-        f"  /gif https://www.youtube.com/watch?v=dQw4w9WgXcQ 0:01 5\n\n"
-        f"Refund policy: Guaranteed automatic refund on any generation failure."
-    )
-    await tg.send_message(msg.chat.id, text)
+    if free:
+        text = (
+            "Welcome to <b>AnyGif</b>!\n\n"
+            "I create GIFs from any video on the internet! "
+            "Just give me a URL, a start time, and a duration (max 10 seconds).\n\n"
+            "Works with YouTube, Vimeo, Twitter, TikTok, Reddit, Instagram, "
+            "and 1000+ other sites.\n\n"
+            f"Price: <s>{price} Stars</s> <b>FREE</b> — to celebrate our launch!\n\n"
+            "How to use:\n"
+            "  /gif &lt;URL&gt; &lt;start_time&gt; &lt;duration_seconds&gt;\n\n"
+            "Example:\n"
+            "  /gif https://www.youtube.com/watch?v=dQw4w9WgXcQ 0:01 5"
+        )
+        await tg.send_message(msg.chat.id, text, parse_mode="HTML")
+    else:
+        text = (
+            f"Welcome to AnyGif!\n\n"
+            f"I create GIFs from any video on the internet! "
+            f"Just give me a URL, a start time, and a duration (max 10 seconds).\n\n"
+            f"Works with YouTube, Vimeo, Twitter, TikTok, Reddit, Instagram, "
+            f"and 1000+ other sites.\n\n"
+            f"Price: {price} Stars per generation.\n\n"
+            f"How to use:\n"
+            f"  /gif <URL> <start_time> <duration_seconds>\n\n"
+            f"Example:\n"
+            f"  /gif https://www.youtube.com/watch?v=dQw4w9WgXcQ 0:01 5\n\n"
+            f"Refund policy: Guaranteed automatic refund on any generation failure."
+        )
+        await tg.send_message(msg.chat.id, text)
 
 
 async def handle_help(msg: Message) -> None:
+    free = config.get_free_mode()
     text = (
         "Usage:\n\n"
         "/gif <URL> <start_time> <duration_seconds>\n\n"
@@ -79,8 +96,11 @@ async def handle_help(msg: Message) -> None:
         "• duration_seconds — GIF duration (1-10 seconds)\n\n"
         "Example:\n"
         "  /gif https://www.youtube.com/watch?v=dQw4w9WgXcQ 0:01 5\n\n"
-        "Refund policy: Automatic refund on any generation failure."
     )
+    if free:
+        text += "AnyGif is currently free — no payment required!"
+    else:
+        text += "Refund policy: Automatic refund on any generation failure."
     await tg.send_message(msg.chat.id, text)
 
 
@@ -147,6 +167,11 @@ async def handle_gif_command(msg: Message) -> None:
     )
     await redis_mod.save_session(session)
 
+    if config.get_free_mode():
+        # Free mode — skip invoice, enqueue directly
+        queue.enqueue_generation(f"free-{session_id}", session_id)
+        return
+
     # Send invoice
     price = config.get_generation_price()
     invoice_resp = await tg.send_invoice(
@@ -186,7 +211,12 @@ async def handle_successful_payment(charge_id: str, session_id: str) -> None:
 
     session = await redis_mod.get_session(session_id)
 
+    free = config.get_free_mode()
+
     if session is None:
+        if free:
+            logger.error("Missing session for free generation %s", session_id)
+            return
         user_id = await redis_mod.get_and_delete_refund_fallback(session_id)
         if user_id is None:
             logger.error("Missing session and refund fallback for session %s", session_id)
@@ -234,12 +264,19 @@ async def handle_successful_payment(charge_id: str, session_id: str) -> None:
         logger.error("GIF generation failed for session %s: %s", session_id, type(e).__name__)
         if processing_message_id:
             await tg.delete_message(session.chat_id, processing_message_id)
-        await tg.refund_star_payment(session.user_id, charge_id)
-        await tg.send_message(
-            session.chat_id,
-            "GIF generation failed. Your Stars have been refunded. Please, try again later.",
-            reply_to_message_id=session.original_message_id,
-        )
+        if free:
+            await tg.send_message(
+                session.chat_id,
+                "GIF generation failed. Please try again.",
+                reply_to_message_id=session.original_message_id,
+            )
+        else:
+            await tg.refund_star_payment(session.user_id, charge_id)
+            await tg.send_message(
+                session.chat_id,
+                "GIF generation failed. Your Stars have been refunded. Please, try again later.",
+                reply_to_message_id=session.original_message_id,
+            )
 
     finally:
         await redis_mod.delete_session(session_id)

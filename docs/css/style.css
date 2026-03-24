@@ -324,6 +324,21 @@ footer a:hover {
   padding-left: 1.25rem;
 }
 
+/* ===== Free Mode ===== */
+
+.free-badge {
+  color: var(--neon);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  animation: pulse-glow-text 2.5s ease-in-out infinite;
+}
+
+.price-struck {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
 /* ===== Responsive ===== */
 
 @media (max-width: 767.98px) {

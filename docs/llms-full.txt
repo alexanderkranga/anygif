@@ -1,13 +1,13 @@
 # AnyGif Bot
 
-> AnyGif is an open source, private and secure Telegram bot. It converts any video URL into a GIF, supports 1,700+ websites, costs 10 Telegram Stars per GIF, and is built so that not even we can see what you're doing. Every privacy claim is backed by public source code.
+> AnyGif is a free, open source, private and secure Telegram bot. It converts any video URL into a GIF, supports 1,700+ websites, and is currently free to celebrate our launch (normally 10 Telegram Stars per GIF). Built so that not even we can see what you're doing. Every privacy claim is backed by public source code.
 
 ## About
 
-AnyGif lets users paste any video link, choose a start time and duration (up to 10 seconds), and receive a GIF instantly in Telegram. If generation fails, Stars are automatically refunded.
+AnyGif lets users paste any video link, choose a start time and duration (up to 10 seconds), and receive a GIF instantly in Telegram — completely free, no payment required.
 
 **Bot:** [@anygif_bot](https://t.me/anygif_bot)
-**Price:** 10 Telegram Stars per GIF
+**Price:** Free! (normally 10 Telegram Stars per GIF — free to celebrate our launch)
 **Max GIF length:** 10 seconds
 **Contact:** [@alexandercranga on X](https://x.com/alexandercranga)
 
@@ -24,7 +24,7 @@ We built AnyGif so that not even we can see what you're doing.
 
 1. **Send a link** - Paste any video URL from 1,700+ supported sites
 2. **Pick your moment** - Choose the start time and duration (up to 10 seconds)
-3. **Get your GIF** - Pay 10 Stars and receive your GIF instantly
+3. **Get your GIF** - It's free! Get your GIF instantly
 
 ## Supported Sites
 
@@ -45,10 +45,10 @@ Adult websites are also supported.
 AnyGif is a Telegram bot that converts any video URL into a GIF. Just paste a link, choose the moment you want, and get your GIF delivered right in the chat.
 
 ### How much does it cost?
-Each GIF costs 10 Telegram Stars. Stars are Telegram's built-in digital currency that you can purchase directly within the app.
+AnyGif is currently free to celebrate our launch! Normally each GIF costs 10 Telegram Stars, but right now every generation is on us.
 
 ### What if the generation fails?
-If your GIF fails to generate for any reason, your 10 Stars are automatically refunded. You'll never be charged for a GIF you didn't receive.
+If your GIF fails to generate for any reason, just try again. It's free!
 
 ### What video sites are supported?
 AnyGif supports over 1,700 websites including YouTube, TikTok, Instagram, Twitter/X, Reddit, Vimeo, Twitch, adult sites, and many more.
@@ -57,7 +57,7 @@ AnyGif supports over 1,700 websites including YouTube, TikTok, Instagram, Twitte
 GIFs can be up to 10 seconds long. You choose the start time and duration when creating your GIF.
 
 ### How do I use the bot?
-Open @anygif_bot in Telegram and send any video URL. The bot will guide you through selecting the start time and duration, then generate your GIF after payment.
+Open @anygif_bot in Telegram and send a command like `/gif <URL> <start_time> <duration>`. Your GIF will be generated instantly — no payment required while AnyGif is free!
 
 ### How do I get the most out of the bot?
 We recommend adding AnyGif as an exception so your GIFs aren't automatically saved to your camera roll. On iOS: go to Settings → Data and Storage → Save to Photos → Private Chats → Add Exception, then select AnyGif and set it to save neither photos nor videos. On Android: go to Settings → Data and Storage → Save to Gallery → Add Exception, then select AnyGif and set it to save neither photos nor videos.
@@ -66,7 +66,7 @@ We recommend adding AnyGif as an exception so your GIFs aren't automatically sav
 Nothing. Your video link and request are used to create your GIF and then immediately discarded. We have no record of what you asked for, who you are, or that you ever used the bot.
 
 ### How do I get Telegram Stars?
-You can purchase Telegram Stars directly within the Telegram app. Go to Settings > My Stars, or simply try to pay for a GIF and Telegram will prompt you to buy Stars.
+You don't need Telegram Stars right now — AnyGif is currently free! When pricing returns, Stars are Telegram's built-in digital currency that you can purchase directly within the Telegram app under Settings > My Stars.
 
 ## Privacy Policy
 
