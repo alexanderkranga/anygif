@@ -15,7 +15,7 @@
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 
 body {
   background: var(--bg);
@@ -339,10 +339,17 @@ footer a:hover {
   opacity: 0.5;
 }
 
+/* ===== Hide scrollbars (keep scroll functional) ===== */
+
+html, body { scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+
 /* ===== Responsive ===== */
 
 @media (max-width: 767.98px) {
   .hero { text-align: center; }
+  .hero .d-flex.flex-wrap { justify-content: center; }
+  .hero #gif-count { text-align: center; }
   .hero-demo-video { margin: 0 auto 2rem; max-width: 320px; }
   section { padding: 3.5rem 0; }
   .btn-neon { width: 100%; }
